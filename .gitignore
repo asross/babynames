@@ -1,2 +1,9 @@
-data.json
+*.json
 raw/*.html
+visualization/.bundle
+visualization/vendor/bundle
+visualization/bower_components
+visualization/build
+visualization/.sass-cache
+visualization/cache
+.DS_Store
