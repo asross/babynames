@@ -4,26 +4,17 @@ title: Baby Names in the United States
 
 <h1 id='current-name'></h1>
 
-<div class='navigation'>
-  <div class='stepper-widget' data-target='year'>
-    <h2></h2><button class='decrement'>&lt;</button><button class='increment'>&gt;</button>
-  </div>
+<input id='name-timeline' type='range' min='1' max='1000'/>
 
-  <div class='stepper-widget' data-target='rank'>
-    <h2></h2><button class='decrement'>v</button><button class='increment'>^</button>
-  </div>
+<div class='navigation'>
+  <input id='year' type='number' min='1880' max='2014'/>
+  <input id='rank' type='number' min='1' max='1000'/>
 
   <select id='gender'>
     <option value='boy_names' selected='selected'>Boy Names</option>
     <option value='girl_names'>Girl Names</option>
   </select>
 
-  <select id='all-names'>
-    <option>Jump to name...</option>
+  <select id='all-names' class='chosen-select' data-placeholder='Jump to name...'>
   </select>
 </div>
-
-<script>
-  window.dataByName = <%= data_by_name %>;
-  window.dataByYear = <%= data_by_year %>;
-</script>

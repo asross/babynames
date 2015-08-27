@@ -1,54 +1,64 @@
 //= require_tree .
 //= require d3
+//= require jquery
+//= require chosen
 
-window.year = 1880;
-window.rank = 0;
-
-var steppers = document.getElementsByClassName('stepper-widget');
 var genderSelect = document.getElementById('gender');
 var nameHeader = document.getElementById('current-name');
 var nameSelect = document.getElementById('all-names');
+var yearInput = document.getElementById('year');
+var rankInput = document.getElementById('rank');
+var rangeInput = document.getElementById('name-timeline');
+
+yearInput.value = 1880;
+rankInput.value = 1;
+
+rangeInput.oninput = function() {
+  data = dataByName[genderSelect.value][nameSelect.value];
+  datum = data[this.value - 1];
+  yearInput.value = datum.year;
+  rankInput.value = datum.rank;
+  window.redraw();
+};
 
 nameSelect.onchange = function() {
   allNames = Object.keys(dataByName[genderSelect.value]);
   index = allNames.indexOf(this.value);
   if (index >= 0) {
     data = dataByName[genderSelect.value][this.value];
-    window.year = data[0][0];
-    window.rank = data[0][1] - 1;
+    yearInput.value = data[0].year;
+    rankInput.value = data[0].rank;
     window.redraw();
   }
 };
 
+$(nameSelect).chosen({ width: '300px' });
+
 genderSelect.onchange = function() {
+  nameSelect.innerHTML = "";
+  nameOptions = Object.keys(dataByName[this.value]).sort();
+  nameOptions.forEach(function(e) {
+    option = document.createElement('option');
+    option.value = e;
+    option.text = e;
+    nameSelect.appendChild(option);
+  });
   window.redraw();
 };
 
-changeQuantity = function(quantity, value) {
-  window[quantity] += value;
-  try {
-    window.redraw();
-  } catch(e) {
-    window[quantity] -= value;
-  };
+yearInput.onchange = function() {
+  window.redraw();
 }
 
-for (i = 0; i < steppers.length; i++) {
-  incrementButton = steppers[i].getElementsByClassName('increment')[0];
-  decrementButton = steppers[i].getElementsByClassName('decrement')[0];
-  incrementButton.onclick = function() {
-    quantity = element.parentElement.attributes['data-target'].value;
-    changeQuantity(quantity, 1); };
-  decrementButton.onclick = function() {
-    quantity = element.parentElement.attributes['data-target'].value;
-    changeQuantity(quantity, -1); };
-};
+rankInput.onchange = function() {
+  window.redraw();
+}
 
 document.onkeydown = function() {
-  if (event.keyIdentifier == "Up") changeQuantity('rank', -1);
-  else if (event.keyIdentifier == "Down") changeQuantity('rank', 1);
-  else if (event.keyIdentifier == "Right") changeQuantity('year', 1);
-  else if (event.keyIdentifier == "Left") changeQuantity('year', -1);
+  if (event.keyIdentifier == "Up")        rankInput.stepDown() || rankInput.onchange();
+  else if (event.keyIdentifier == "Down") rankInput.stepUp() || rankInput.onchange();
+  else if (event.keyIdentifier == "Right") yearInput.stepUp() || yearInput.onchange();
+  else if (event.keyIdentifier == "Left") yearInput.stepDown() || yearInput.onchange();
 }
 
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
@@ -57,14 +67,12 @@ var margin = {top: 20, right: 80, bottom: 30, left: 50},
 var x = d3.scale.linear().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 x.domain([1880, 2015]);
-y.domain([1000, 0]);
+y.domain([1000, 1]);
 var xAxis = d3.svg.axis().scale(x).orient("bottom");
 var yAxis = d3.svg.axis().scale(y).orient("left");
-var dataYear = function(d) { return d[0]; };
-var dataPct = function(d) { return d[1]; };
-var line = d3.svg.line().interpolate("basis")
-    .x(function(d) { return x(dataYear(d)); })
-    .y(function(d) { return y(dataPct(d)); })
+var line = d3.svg.line().interpolate("cardinal")
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.rank); })
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -84,11 +92,7 @@ var yAxisGrid = yAxis.ticks(333).tickSize(width, 0).tickFormat('').orient('right
 svg.append("g").classed('x', true).classed('grid', true).call(xAxisGrid);
 svg.append("g").classed('y', true).classed('grid', true).call(yAxisGrid);
 
-var g = svg.append("g")
-var path = g.append("path")
-      .attr("class", "line")
-      .style("stroke", "#1f77b4")
-      .style("fill", "none");
+var g = svg.append("g");
 
 var circle = g.append("circle")
   .attr("class", "marker")
@@ -96,107 +100,59 @@ var circle = g.append("circle")
   .style("fill", "#1f77bf")
   .style("r", 5);
 
-window.redraw = function() {
-  var gender = genderSelect.value;
-  var currentNameInfo = dataByYear[gender][year][rank];
-  var currentName = currentNameInfo[1];
+window.segmentsOf = function(line) {
+  prevYear = line[0].year - 1;
+  segments = [];
+  currentSegment = []
+  for (i = 0; i < line.length; i++) {
+    if (line[i].year == prevYear + 1) {
+      currentSegment.push(line[i]);
+    } else {
+      segments.push(currentSegment);
+      currentSegment = [line[i]];
+    }
+    prevYear = line[i].year;
+  }
+  if (currentSegment.length)
+    segments.push(currentSegment);
+  return segments;
+};
 
-  var nameOptions = Object.keys(dataByName[gender]).sort();
-  nameSelect.innerHTML = "<option>Jump to name...</option>";
-  nameOptions.forEach(function(e) {
-    option = document.createElement('option');
-    option.value = e;
-    option.text = e;
-    nameSelect.appendChild(option);
-  });
+window.redraw = function() {
+  var year = yearInput.value;
+  var rank = rankInput.value;
+  var gender = genderSelect.value;
+
+  var currentNameInfo = dataByYear[gender][year][rank - 1];
+  var currentName = currentNameInfo.name;
+
+  nameSelect.value = currentName;
+  $(nameSelect).trigger('chosen:updated');
 
   nameHeader.innerHTML = currentName;
 
-  for (i = 0; i < steppers.length; i++) {
-    quantity = steppers[i].attributes['data-target'].value;
-    header = steppers[i].getElementsByTagName('h2')[0];
-    header.innerHTML = window[quantity];
-  }
+  data = dataByName[gender][currentName];
 
-  path.attr("d", line(dataByName[gender][currentName]));
+  rangeInput.max = data.length;
+  index = 1;
+  for (i = 0; i < data.length; i++) {
+    if (data[i].year == year) break;
+    index += 1;
+  }
+  rangeInput.value = index;
+
+  segments = segmentsOf(data);
+  d3.selectAll("path.line").remove();
+  segments.forEach(function(segment) {
+    g.append("path")
+    .attr("d", line(segment))
+    .attr("class", "line")
+    .style("stroke", "#1f77b4")
+    .style("fill", "none");
+  });
+
   circle.attr("transform", "translate(" + x(year) +"," + y(rank) + ")");
 };
 
 console.log('starting!');
-redraw();
-
-//
-  //window.babyNameData = <%= baby_name_data %>;
-  //window.babyNameRankings = <%= rankings %>;
-  //window.gender = 'boy_names';
-  //window.year = 1880;
-  //window.nameIndex = 0;
-  //window.chartContainer = document.getElementsByTagName('body')[0];
-
-  ////var abbreviated_data = {};
-  ////var boy_names = Object.keys(window.babyNameData.boy_names);
-  ////for (i=0; i<200; i++) {
-  ////  name = boy_names[i];
-  ////  abbreviated_data[name] = window.babyNameData.boy_names[name];
-  ////}
-  ////window.babyNameData.boy_names = abbreviated_data;
-
-  //window.redrawEverything = function() {
-
-//allNames = Object.keys(babyNameData[gender]);
-//currentName = allNames[nameIndex];
-
-//chartContainer.innerHTML = '';
-
-
-
-
-//selectName = function(name) {
-  //var index = allNames.indexOf(name);
-  //if (index >= 0) {
-    //window.nameIndex = index;
-    //redrawEverything();
-  //}
-//}
-
-//select = document.createElement('select');
-//babyNameRankings[gender].forEach(function(e) {
-  //option = document.createElement('option');
-  //option.value = e[0];
-  //option.text = e[0] + " " + e[1];
-  //if (e[0] == currentName) option.selected = true;
-  //select.appendChild(option);
-//});
-//chartContainer.appendChild(select);
-
-//nameHeader = document.createElement('h1');
-//nameHeader.innerHTML = currentName;
-//chartContainer.appendChild(nameHeader);
-
-//select.onchange = function() {
-  //selectName(select.value);
-//}
-//};
-
-////redraw = function(change) {
-////  oldEl = document.getElementById(selectedName());
-////  i += change;
-////  if (i >= allNames.length) i = 0;
-////  if (i < 0) i = allNames.length - 1;
-////  newEl = document.getElementById(selectedName());
-////
-////  oldEl.style.opacity = 0.1;
-////  newEl.style.opacity = 1;
-////  oldEl.children[0].style.strokeWidth = '1.5px';
-////  newEl.children[0].style.strokeWidth = '5px';
-////};
-
-////document.onkeydown = function(event) {
-////  if (event.keyIdentifier == 'Up' || event.keyIdentifier == 'Right') {
-////    redraw(1);
-////  } else if (event.keyIdentifier == 'Down' || event.keyIdentifier == 'Left') {
-////    redraw(-1);
-////  }
-////}
-////select.onchange();
-//redrawEverything();
+genderSelect.onchange();

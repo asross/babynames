@@ -1,16 +1,19 @@
+/*
+ *= require chosen/chosen.min
+ */
+
 @charset "utf-8";
+
+h1 {
+  display: inline;
+}
 
 body {
   padding: 1rem;
 }
 
-.stepper-widget {
-  display: inline-block;
-  margin-right: 1rem;
-}
-.stepper-widget h2 {
-  display: inline-block;
-  margin-right: 1rem;
+input[type='number'] {
+  font-size: 2em;
 }
 
 .axis path,

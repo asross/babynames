@@ -57,6 +57,10 @@ sprockets.append_path File.join root, 'bower_components'
 
 sprockets.import_asset 'd3/d3'
 
+sprockets.import_asset 'chosen/chosen-sprite@2x.png' do |p|
+  "stylesheets/chosen-sprite@2x.png"
+end
+
 helpers do
   def data_by_name
     File.read("#{root}/../data_by_name.json")
@@ -83,7 +87,7 @@ configure :build do
   # activate :asset_hash
 
   # Use relative URLs
-  # activate :relative_assets
+  activate :relative_assets
 
   # Or use a different image path
   # set :http_prefix, "/Content/images/"
