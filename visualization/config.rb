@@ -58,8 +58,12 @@ sprockets.append_path File.join root, 'bower_components'
 sprockets.import_asset 'd3/d3'
 
 helpers do
-  def baby_name_data
+  def data_by_name
     File.read("#{root}/../data_by_name.json")
+  end
+
+  def data_by_year
+    File.read("#{root}/../data_by_year.json")
   end
 
   def rankings

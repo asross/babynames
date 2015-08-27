@@ -1,5 +1,10 @@
 @charset "utf-8";
 
+.stepper-widget h2 {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
 .axis path,
 .axis line {
   fill: none;
