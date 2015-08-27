@@ -7,6 +7,19 @@ title: Baby Names in the United States
 <input id='name-timeline' type='range' min='1' max='1000'/>
 
 <div class='navigation'>
+  <div class='arrow-keys'>
+    <table>
+      <tr>
+        <td></td>
+        <td><button class='arrow-key' onclick='step("Up")'>&#9650;</button></td>
+        <td></td>
+      </tr><tr>
+        <td><button class='arrow-key' onclick='step("Left")'>&#9664;</button></td>
+        <td><button class='arrow-key' onclick='step("Down")'>&#9660;</button></td>
+        <td><button class='arrow-key' onclick='step("Right")'>&#9658;</button></td>
+      </tr>
+    </table>
+  </div>
   <input id='year' type='number' min='1880' max='2014'/>
   <input id='rank' type='number' min='1' max='1000'/>
 

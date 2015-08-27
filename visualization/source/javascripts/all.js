@@ -54,11 +54,15 @@ rankInput.onchange = function() {
   window.redraw();
 }
 
+window.step = function(keyIdentifier) {
+  if (keyIdentifier == "Up")        rankInput.stepDown() || rankInput.onchange();
+  else if (keyIdentifier == "Down") rankInput.stepUp() || rankInput.onchange();
+  else if (keyIdentifier == "Right") yearInput.stepUp() || yearInput.onchange();
+  else if (keyIdentifier == "Left") yearInput.stepDown() || yearInput.onchange();
+}
+
 document.onkeydown = function() {
-  if (event.keyIdentifier == "Up")        rankInput.stepDown() || rankInput.onchange();
-  else if (event.keyIdentifier == "Down") rankInput.stepUp() || rankInput.onchange();
-  else if (event.keyIdentifier == "Right") yearInput.stepUp() || yearInput.onchange();
-  else if (event.keyIdentifier == "Left") yearInput.stepDown() || yearInput.onchange();
+  step(event.keyIdentifier);
 }
 
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
