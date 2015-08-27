@@ -1,5 +1,13 @@
 @charset "utf-8";
 
+body {
+  padding: 1rem;
+}
+
+.stepper-widget {
+  display: inline-block;
+  margin-right: 1rem;
+}
 .stepper-widget h2 {
   display: inline-block;
   margin-right: 1rem;

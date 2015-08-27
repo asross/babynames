@@ -45,8 +45,8 @@ for (i = 0; i < steppers.length; i++) {
 };
 
 document.onkeydown = function() {
-  if (event.keyIdentifier == "Up") changeQuantity('rank', 1);
-  else if (event.keyIdentifier == "Down") changeQuantity('rank', -1);
+  if (event.keyIdentifier == "Up") changeQuantity('rank', -1);
+  else if (event.keyIdentifier == "Down") changeQuantity('rank', 1);
   else if (event.keyIdentifier == "Right") changeQuantity('year', 1);
   else if (event.keyIdentifier == "Left") changeQuantity('year', -1);
 }
