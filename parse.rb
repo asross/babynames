@@ -1,4 +1,5 @@
 require 'json'
+require 'pry'
 
 data_by_year = { boy_names: {}, girl_names: {} }
 data_by_name = { boy_names: {}, girl_names: {} }
@@ -29,6 +30,8 @@ def average_by(key, array)
   sum.to_f / array.length
 end
 
+CHANGE_TOLERANCE = 50
+
 metrics_by_name = { boy_names: {}, girl_names: {} }
 metrics_by_name.each do |gender, metrics|
   data_by_name[gender].each do |name, data|
@@ -58,12 +61,16 @@ metrics_by_name.each do |gender, metrics|
 
     decay_profile = changes_by_decade.map { |c|
       case
-      when c[:change] < -35
-        :getting_more_popular
-      when c[:change] > 35
-        :getting_less_popular
+      when c[:change] < -CHANGE_TOLERANCE*3
+        3 #:getting_much_more_popular
+      when c[:change] > CHANGE_TOLERANCE*3
+        -3 #:getting_much_less_popular
+      when c[:change] < -CHANGE_TOLERANCE
+        1 #:getting_more_popular
+      when c[:change] > CHANGE_TOLERANCE
+        -1 #:getting_less_popular
       else
-        :stable
+        0 #:stable
       end
     }
 
@@ -93,10 +100,7 @@ metrics_by_name.each do |gender, metrics|
   end
 end
 
-require 'pry'
 
-metrics = metrics_by_name[:boy_names].values
-popular_names = metrics.select { |m| m[:overall] < 350 }
 
 def distance_between_profiles(m1, m2)
   distance = 0
@@ -104,40 +108,48 @@ def distance_between_profiles(m1, m2)
   m1[:decay_profile].zip(m2[:decay_profile]).each do |action1, action2|
     i += 1
     next if i == 1
-    if action1 == action2
-      distance += 0
-    elsif action1 == :stable || action2 == :stable
-      distance += 1
-    else
-      distance += 2
-    end
+    distance += (action1 - action2).abs
+    #if action1 == action2
+      #distance += 0
+    #elsif action1 == :stable || action2 == :stable
+      #distance += 1
+    #else
+      #distance += 2
+    #end
   end
   distance
 end
 
-def distance_between_changes(m1, m2)
-  total = 0
-  m1[:normalized_changes_by_decade].zip(m2[:normalized_changes_by_decade]).each do |change1, change2|
-    total += (change1[:change] - change2[:change]).abs
-  end
-  total / m1[:normalized_changes_by_decade].to_f
-end
+#def distance_between_changes(m1, m2)
+  #total = 0
+  #m1[:normalized_changes_by_decade].zip(m2[:normalized_changes_by_decade]).each do |change1, change2|
+    #total += (change1[:change] - change2[:change]).abs
+  #end
+  #total / m1[:normalized_changes_by_decade].to_f
+#end
 
-groups = []
-popular_names.each do |name|
-  matching_group = groups.detect do |group|
-    average_distance = 0
-    group.each do |item|
-      average_distance += distance_between_profiles(item, name)
+groups_by_gender = { boy_names: [], girl_names: [] }
+
+groups_by_gender.each do |gender, groups|
+  metrics = metrics_by_name[gender].values
+  popular_names = metrics.select { |m| m[:overall] < 500 }
+  popular_names.each do |name|
+    matching_group = groups.detect do |group|
+      average_distance = 0
+      group.each do |item|
+        average_distance += distance_between_profiles(item, name)
+      end
+      average_distance = average_distance / group.length.to_f
+      average_distance <= 4
     end
-    average_distance = average_distance / group.length.to_f
-    average_distance <= 4
+    if matching_group
+      matching_group << name
+    else
+      groups << [name]
+    end
   end
-  if matching_group
-    matching_group << name
-  else
-    groups << [name]
-  end
+  groups.select!{|g| g.length >= 5}
+  groups.map{|g| g.map{|gg| gg[:name] }}.each {|row| print row; print "\n************\n"}; nil
 end
 
 
@@ -147,4 +159,12 @@ end
 
 File.open("./data_by_name.json", "wb") do |f|
   f.write JSON.dump(data_by_name)
+end
+
+File.open("./metrics_by_name.json", "wb") do |f|
+  f.write JSON.dump(metrics_by_name)
+end
+
+File.open("./groups.json", "wb") do |f|
+  f.write JSON.dump(groups_by_gender)
 end
