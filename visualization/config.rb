@@ -70,8 +70,12 @@ helpers do
     File.read("#{root}/../data_by_year.json")
   end
 
-  def rankings
-    File.read("#{root}/../rankings.json")
+  def metrics_by_name
+    File.read("#{root}/../metrics_by_name.json")
+  end
+
+  def groups
+    File.read("#{root}/../groups.json")
   end
 end
 

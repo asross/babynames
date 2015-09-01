@@ -84,6 +84,15 @@ metrics_by_name.each do |gender, metrics|
       change: cd[:change] / total_spread.to_f
     }}
 
+    first = nil
+    last = nil
+    averages_by_decade.each do |avg|
+      if avg[:average_rank] < 1000
+        last = avg
+        first ||= avg
+      end
+    end
+
     metrics[name] = {
       name: name,
       averages_by_decade: averages_by_decade,
@@ -92,8 +101,8 @@ metrics_by_name.each do |gender, metrics|
       decay_profile: decay_profile,
       max: max,
       min: min,
-      initial: averages_by_decade.first,
-      final: averages_by_decade.last,
+      initial: first,
+      final: last,
       overall: average_by(:average_rank, averages_by_decade)
     }
 
