@@ -1,7 +1,16 @@
 require 'json'
+require 'set'
 require 'pry'
 
 module Enumerable
+  def average_by(key, default)
+    return default if self.length == 0
+    total = self.inject(0) do |accum, element|
+      accum += element[key]
+    end
+    total / length.to_f
+  end
+
   def sum
     self.inject(0){|accum, i| accum + i }
   end
@@ -40,193 +49,97 @@ data_by_name = { boy_names: {}, girl_names: {} }
   end
 end
 
-def decade(data)
-  data[:year].to_s[0..2].to_i
+def changes(list, time_key, value_key)
+  prev_period = list[0]
+  list[1..-1].each_with_object([]) do |this_period, results|
+    results << {
+      from: prev_period[time_key],
+      to: this_period[time_key],
+      change: this_period[value_key] - prev_period[value_key]
+    }
+    prev_period = this_period
+  end
 end
 
-def average_by(key, array)
-  return 1000 unless array.length > 0
-  sum = array.reduce(0) { |running_total, element| running_total += element[key] }
-  sum.to_f / array.length
+def decay_profile(trend, bin_size = 50, importance = 1.5)
+  trend.map do |c|
+    number = 0
+    [3, 2, 1, 0.5, 0.25].each do |n|
+      break if number != 0
+      if c[:change] < -bin_size*n
+        number = n*importance
+      elsif c[:change] > bin_size*n
+        number = -n*importance
+      end
+    end
+    number
+  end
 end
 
-def elementwise_average(array_of_arrays)
-  array_of_arrays[0].zip(*array_of_arrays[1..-1]).map(&:mean)
-end
-
-CHANGE_TOLERANCE = 50
-
-#metrics_by_decade = Hash.new{|h,k| h[k] = [] }
+decades = 188.upto(201).to_a
+fiveyrs = 376.upto(402).to_a
 
 metrics_by_name = { boy_names: {}, girl_names: {} }
 metrics_by_name.each do |gender, metrics|
   data_by_name[gender].each do |name, data|
-    data_by_decade = {}
-    188.upto(201).each { |i| data_by_decade[i] = [] }
-    data.each do |datum|
-      data_by_decade[decade(datum)] << datum
+    m = {}
+    m[:name] = name
+
+    ten_year_data = Hash[decades.map { |i| [i, []] }]
+    five_year_data = Hash[fiveyrs.map { |i| [i, []] }]
+    area_under_curve = 0
+
+    data.each do |d|
+      area_under_curve += 1000 - d[:rank]
+      ten_year_data[d[:year]/10] << d
+      five_year_data[d[:year]/5] << d
     end
 
-    averages_by_decade = data_by_decade.map { |decade, points| {
-      decade: decade * 10,
-      average_rank: average_by(:rank, points),
-      average_percent: average_by(:percent, points)
-    }}
+    m[:area_under_curve] = area_under_curve
 
-    changes_by_decade = []
-    prev_decade = averages_by_decade[0]
-    averages_by_decade[1..-1].each do |this_decade|
-      #metrics_by_decade["#{prev_decade[:decade]}-#{this_decade[:decade]}"] << this_decade[:average_rank] - prev_decade[:average_rank]
-      changes_by_decade << {
-        from: prev_decade[:decade],
-        to: this_decade[:decade],
-        change: this_decade[:average_rank] - prev_decade[:average_rank]
-      }
-      prev_decade = this_decade
-    end
+    ten_year_averages = ten_year_data.map { |yr, points| { year: 10*yr, rank: points.average_by(:rank, 1000) } }
+    five_year_averages = five_year_data.map { |yr, points| { year: 5*yr, rank: points.average_by(:rank, 1000) } }
 
+    m[:ten_year_averages] = ten_year_averages
+    m[:five_year_averages] = five_year_averages
 
-    decay_profile = changes_by_decade.map { |c|
-      number = 0
-      [3, 2, 1, 0.5, 0.25].each do |n|
-        break if number != 0
-        if c[:change] < -CHANGE_TOLERANCE*n
-          number = n*1.5
-        elsif c[:change] > CHANGE_TOLERANCE*n
-          number = -n*1.5
-        end
-      end
-      number
-    }
+    ten_year_changes = changes(ten_year_averages, :year, :rank)
+    five_year_changes = changes(five_year_averages, :year, :rank)
 
-    max = averages_by_decade.max_by { |el| el[:average_rank] }
-    min = averages_by_decade.min_by { |el| el[:average_rank] }
+    m[:ten_year_changes] = ten_year_changes
+    m[:five_year_changes] = five_year_changes
 
-    total_spread = max[:average_rank] - min[:average_rank]
-    normalized_changes_by_decade = changes_by_decade.map { |cd| {
-      from: cd[:from],
-      to: cd[:to],
-      change: cd[:change] / total_spread.to_f
-    }}
+    m[:ten_year_change_summary] = decay_profile(ten_year_changes)
+    m[:five_year_change_summary] = decay_profile(five_year_changes)
 
-    first = nil
-    last = nil
-    averages_by_decade.each do |avg|
-      if avg[:average_rank] < 1000
-        last = avg
-        first ||= avg
-      end
-    end
+    m[:closest_names] = []
 
-    metrics[name] = {
-      name: name,
-      averages_by_decade: averages_by_decade,
-      changes_by_decade: changes_by_decade,
-      normalized_changes_by_decade: normalized_changes_by_decade,
-      decay_profile: decay_profile,
-      max: max,
-      min: min,
-      initial: first,
-      final: last,
-      overall: average_by(:average_rank, averages_by_decade)
-    }
-
+    metrics[name] = m
   end
 end
 
 
-
-def distance_between_profiles(m1, m2)
+def distance_between_change_summaries(m1, m2)
   distance = 0
-  i = 0
   m1.zip(m2).each do |action1, action2|
-    i += 1
-    next if i == 1
     distance += (action1 - action2).abs
-    #if action1 == action2
-      #distance += 0
-    #elsif action1 == :stable || action2 == :stable
-      #distance += 1
-    #else
-      #distance += 2
-    #end
   end
   distance
 end
 
-#def distance_between_changes(m1, m2)
-  #total = 0
-  #m1[:normalized_changes_by_decade].zip(m2[:normalized_changes_by_decade]).each do |change1, change2|
-    #total += (change1[:change] - change2[:change]).abs
-  #end
-  #total / m1[:normalized_changes_by_decade].to_f
-#end
+all_metrics = []
+all_metrics += metrics_by_name[:boy_names].map{|name, m| [:boy_names, m] }
+all_metrics += metrics_by_name[:girl_names].map{|name, m| [:girl_names, m] }
+all_metrics.select!{|g, m| m[:area_under_curve] > 50000 }
 
-groups_by_gender = { boy_names: [], girl_names: [] }
-
-groups_by_gender.each do |gender, groups|
-  metrics = metrics_by_name[gender].values
-  popular_names = metrics.select { |m| m[:overall] < 500 }
-  popular_names.each do |name|
-    matching_group = groups.detect do |group|
-      average_distance = 0
-      group.each do |item|
-        average_distance += distance_between_profiles(item[:decay_profile], name[:decay_profile])
-      end
-      average_distance = average_distance / group.length.to_f
-      average_distance <= 3
-    end
-    if matching_group
-      matching_group << name
-    else
-      groups << [name]
-    end
+all_metrics.each do |_, metric1|
+  closest = SortedSet.new
+  all_metrics.each do |gender, metric2|
+    distance = distance_between_change_summaries(metric1[:five_year_change_summary], metric2[:five_year_change_summary])
+    closest << [distance, gender, metric2[:name]]
   end
-
-  done = false
-
-  until done
-    done = true
-    combinations_this_time = []
-
-    groups.each_with_index do |group1, i|
-      avg1 = elementwise_average(group1.map{|g|g[:decay_profile]})
-      next if combinations_this_time.any?{|combo| combo.include?(i) }
-      groups.each_with_index do |group2, j|
-        next if i == j
-        next if combinations_this_time.any?{|combo| combo.include?(j) }
-        avg2 = elementwise_average(group2.map{|g|g[:decay_profile]})
-
-        if distance_between_profiles(avg1, avg2) <= 7
-          done = false
-          combinations_this_time << [i, j]
-        end
-      end
-    end
-
-    combinations_this_time.each do |i, j|
-      groups[i] += groups[j]
-    end
-    indexes_to_delete = combinations_this_time.map(&:last).sort.reverse
-    indexes_to_delete.each do |j|
-      groups.delete_at(j)
-    end
-  end
-
-  #groups_with_distances = groups.map{|group| [group, elementwise_average(group.map{|g|g[:decay_profile]})] }
-
-  #intragroup_distances.each do |group1|
-    #puts '********'
-    #intragroup_distances.each do |group2|
-      #print distance_between_profiles(group1, group2)
-      #print "\n"
-    #end
-  #end
-  #binding.pry
-  groups.select!{|g| g.length >= 5}
-  groups.map{|g| g.map{|gg| gg[:name] }}.each {|row| print row; print "\n************\n"}; nil
+  metric1[:closest_names] = closest.to_a[0..100]
 end
-
 
 File.open("./data_by_year.json", "wb") do |f|
   f.write JSON.dump(data_by_year)
@@ -238,8 +151,4 @@ end
 
 File.open("./metrics_by_name.json", "wb") do |f|
   f.write JSON.dump(metrics_by_name)
-end
-
-File.open("./groups.json", "wb") do |f|
-  f.write JSON.dump(groups_by_gender)
 end
