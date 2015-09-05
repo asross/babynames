@@ -1,6 +1,26 @@
 require 'json'
 require 'pry'
 
+module Enumerable
+  def sum
+    self.inject(0){|accum, i| accum + i }
+  end
+
+  def mean
+    self.sum/self.length.to_f
+  end
+
+  def sample_variance
+    m = self.mean
+    sum = self.inject(0){|accum, i| accum +(i-m)**2 }
+    sum/(self.length - 1).to_f
+  end
+
+  def standard_deviation
+    return Math.sqrt(self.sample_variance)
+  end
+end
+
 data_by_year = { boy_names: {}, girl_names: {} }
 data_by_name = { boy_names: {}, girl_names: {} }
 
@@ -30,7 +50,13 @@ def average_by(key, array)
   sum.to_f / array.length
 end
 
+def elementwise_average(array_of_arrays)
+  array_of_arrays[0].zip(*array_of_arrays[1..-1]).map(&:mean)
+end
+
 CHANGE_TOLERANCE = 50
+
+#metrics_by_decade = Hash.new{|h,k| h[k] = [] }
 
 metrics_by_name = { boy_names: {}, girl_names: {} }
 metrics_by_name.each do |gender, metrics|
@@ -50,6 +76,7 @@ metrics_by_name.each do |gender, metrics|
     changes_by_decade = []
     prev_decade = averages_by_decade[0]
     averages_by_decade[1..-1].each do |this_decade|
+      #metrics_by_decade["#{prev_decade[:decade]}-#{this_decade[:decade]}"] << this_decade[:average_rank] - prev_decade[:average_rank]
       changes_by_decade << {
         from: prev_decade[:decade],
         to: this_decade[:decade],
@@ -60,18 +87,16 @@ metrics_by_name.each do |gender, metrics|
 
 
     decay_profile = changes_by_decade.map { |c|
-      case
-      when c[:change] < -CHANGE_TOLERANCE*3
-        3 #:getting_much_more_popular
-      when c[:change] > CHANGE_TOLERANCE*3
-        -3 #:getting_much_less_popular
-      when c[:change] < -CHANGE_TOLERANCE
-        1 #:getting_more_popular
-      when c[:change] > CHANGE_TOLERANCE
-        -1 #:getting_less_popular
-      else
-        0 #:stable
+      number = 0
+      [3, 2, 1, 0.5, 0.25].each do |n|
+        break if number != 0
+        if c[:change] < -CHANGE_TOLERANCE*n
+          number = n*1.5
+        elsif c[:change] > CHANGE_TOLERANCE*n
+          number = -n*1.5
+        end
       end
+      number
     }
 
     max = averages_by_decade.max_by { |el| el[:average_rank] }
@@ -114,7 +139,7 @@ end
 def distance_between_profiles(m1, m2)
   distance = 0
   i = 0
-  m1[:decay_profile].zip(m2[:decay_profile]).each do |action1, action2|
+  m1.zip(m2).each do |action1, action2|
     i += 1
     next if i == 1
     distance += (action1 - action2).abs
@@ -146,10 +171,10 @@ groups_by_gender.each do |gender, groups|
     matching_group = groups.detect do |group|
       average_distance = 0
       group.each do |item|
-        average_distance += distance_between_profiles(item, name)
+        average_distance += distance_between_profiles(item[:decay_profile], name[:decay_profile])
       end
       average_distance = average_distance / group.length.to_f
-      average_distance <= 4
+      average_distance <= 3
     end
     if matching_group
       matching_group << name
@@ -157,6 +182,47 @@ groups_by_gender.each do |gender, groups|
       groups << [name]
     end
   end
+
+  done = false
+
+  until done
+    done = true
+    combinations_this_time = []
+
+    groups.each_with_index do |group1, i|
+      avg1 = elementwise_average(group1.map{|g|g[:decay_profile]})
+      next if combinations_this_time.any?{|combo| combo.include?(i) }
+      groups.each_with_index do |group2, j|
+        next if i == j
+        next if combinations_this_time.any?{|combo| combo.include?(j) }
+        avg2 = elementwise_average(group2.map{|g|g[:decay_profile]})
+
+        if distance_between_profiles(avg1, avg2) <= 7
+          done = false
+          combinations_this_time << [i, j]
+        end
+      end
+    end
+
+    combinations_this_time.each do |i, j|
+      groups[i] += groups[j]
+    end
+    indexes_to_delete = combinations_this_time.map(&:last).sort.reverse
+    indexes_to_delete.each do |j|
+      groups.delete_at(j)
+    end
+  end
+
+  #groups_with_distances = groups.map{|group| [group, elementwise_average(group.map{|g|g[:decay_profile]})] }
+
+  #intragroup_distances.each do |group1|
+    #puts '********'
+    #intragroup_distances.each do |group2|
+      #print distance_between_profiles(group1, group2)
+      #print "\n"
+    #end
+  #end
+  #binding.pry
   groups.select!{|g| g.length >= 5}
   groups.map{|g| g.map{|gg| gg[:name] }}.each {|row| print row; print "\n************\n"}; nil
 end
