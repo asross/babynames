@@ -61,7 +61,7 @@ def changes(list, time_key, value_key)
   end
 end
 
-def decay_profile(trend, bin_size = 50, importance = 1.5)
+def decay_profile(trend, bin_size = 30, importance = 1.5)
   trend.map do |c|
     number = 0
     [3, 2, 1, 0.5, 0.25].each do |n|
@@ -74,6 +74,14 @@ def decay_profile(trend, bin_size = 50, importance = 1.5)
     end
     number
   end
+end
+
+def distance_between_change_summaries(m1, m2)
+  distance = 0
+  m1.zip(m2).each do |action1, action2|
+    distance += Math.sqrt (action1 - action2).abs
+  end
+  distance
 end
 
 decades = 188.upto(201).to_a
@@ -118,25 +126,18 @@ metrics_by_name.each do |gender, metrics|
   end
 end
 
-
-def distance_between_change_summaries(m1, m2)
-  distance = 0
-  m1.zip(m2).each do |action1, action2|
-    distance += (action1 - action2).abs
-  end
-  distance
-end
-
 all_metrics = []
 all_metrics += metrics_by_name[:boy_names].map{|name, m| [:boy_names, m] }
 all_metrics += metrics_by_name[:girl_names].map{|name, m| [:girl_names, m] }
 all_metrics.select!{|g, m| m[:area_under_curve] > 50000 }
 
-all_metrics.each do |_, metric1|
+key = :ten_year_change_summary
+all_metrics.each do |gender1, metric1|
   closest = SortedSet.new
-  all_metrics.each do |gender, metric2|
-    distance = distance_between_change_summaries(metric1[:five_year_change_summary], metric2[:five_year_change_summary])
-    closest << [distance, gender, metric2[:name]]
+  all_metrics.each do |gender2, metric2|
+    next if gender1 == gender2 && metric1[:name] == metric2[:name]
+    distance = distance_between_change_summaries(metric1[key], metric2[key])
+    closest << [distance, gender2, metric2[:name]]
   end
   metric1[:closest_names] = closest.to_a[0..100]
 end
