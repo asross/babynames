@@ -62,6 +62,8 @@ window.step = function(keyIdentifier) {
 }
 
 document.onkeydown = function() {
+  if (["Up", "Down", "Left", "Right"].indexOf(event.keyIdentifier) >= 0)
+    event.preventDefault();
   step(event.keyIdentifier);
 }
 
