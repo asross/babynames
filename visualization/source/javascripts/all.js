@@ -74,36 +74,43 @@ var x = d3.scale.linear().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 x.domain([1880, 2015]);
 y.domain([1000, 1]);
-var xAxis = d3.svg.axis().scale(x).orient("bottom");
-var yAxis = d3.svg.axis().scale(y).orient("left");
 var line = d3.svg.line().interpolate("cardinal")
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(d.rank); })
 
-var svg = d3.select("main").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+window.newSvg = function(selector) {
+  xAxis = d3.svg.axis().scale(x).orient("bottom");
+  yAxis = d3.svg.axis().scale(y).orient("left");
 
-svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis)
-  .append("text").attr("x", width - 40).attr("dy", "1.42em").text("Year");
-svg.append("g").attr("class", "y axis").call(yAxis)
-  .append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Ranking");
+  var svg = d3.select(selector).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var xAxisGrid = xAxis.ticks(2015-1880).tickSize(-height, 0).tickFormat('').orient('top');
-var yAxisGrid = yAxis.ticks(333).tickSize(width, 0).tickFormat('').orient('right');
+  svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis)
+    .append("text").attr("x", width - 40).attr("dy", "1.42em").text("Year");
+  svg.append("g").attr("class", "y axis").call(yAxis)
+    .append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", "-2.71em").style("text-anchor", "end").text("Ranking");
 
-svg.append("g").classed('x', true).classed('grid', true).call(xAxisGrid);
-svg.append("g").classed('y', true).classed('grid', true).call(yAxisGrid);
+  xAxisGrid = xAxis.ticks(130).tickSize(-height, 0).tickFormat('').orient('top');
+  yAxisGrid = yAxis.ticks(333).tickSize(width, 0).tickFormat('').orient('right');
 
+  svg.append("g").classed('x', true).classed('grid', true).call(xAxisGrid);
+  svg.append("g").classed('y', true).classed('grid', true).call(yAxisGrid);
+
+  return svg;
+}
+
+var svg = newSvg(document.getElementById("main-chart"));
 var g = svg.append("g");
-
 var circle = g.append("circle")
   .attr("class", "marker")
   .style("stroke", "#1f77b4")
   .style("fill", "#1f77bf")
   .style("r", 5);
+
+var similarities = newSvg(document.getElementById('similar-names'));
 
 window.segmentsOf = function(line) {
   prevYear = line[0].year - 1;
@@ -158,78 +165,32 @@ window.redraw = function() {
   });
 
   circle.attr("transform", "translate(" + x(year) +"," + y(rank) + ")");
+
+  if (metricsByName[gender][currentName]) {
+    window.plotNames(similarities, metricsByName[gender][currentName].closest_names);
+  } else {
+    window.plotNames(similarities, []);
+  }
+};
+
+
+window.plotNames = function(chart, nameGenderPairs) {
+  color = d3.scale.category10();
+  color.domain(nameGenderPairs.map(function(n) { return n[2]; }));
+
+  chart.selectAll("g.name-line").remove();
+
+  nameGenderPairs.slice(0, 15).forEach(function(n) {
+    gender = n[1];
+    name = n[2];
+    var gg = chart.append("g").attr("class", "name-line");
+    gg.append("path")
+      .attr("d", line(metricsByName[gender][name].ten_year_averages))
+      .attr("class", "line")
+      .style("stroke", color(name))
+      .style("fill", "none");
+  });
 };
 
 console.log('starting!');
 genderSelect.onchange();
-
-
-
-
-//METRICS
-//
-var x2 = d3.scale.linear().range([0, width]);
-var y2 = d3.scale.linear().range([height, 0]);
-x2.domain([1880, 2015]);
-y2.domain([1000, 1]);
-var xAxis2 = d3.svg.axis().scale(x2).orient("bottom");
-var yAxis2 = d3.svg.axis().scale(y2).orient("left");
-var svg2 = d3.select("aside").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-svg2.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis2)
-  .append("text").attr("x", width - 40).attr("dy", "1.42em").text("Year");
-svg2.append("g").attr("class", "y axis").call(yAxis2)
-  .append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Ranking");
-var xAxis2Grid = xAxis2.ticks(2015-1880).tickSize(-height, 0).tickFormat('').orient('top');
-var yAxis2Grid = yAxis2.ticks(333).tickSize(width, 0).tickFormat('').orient('right');
-svg2.append("g").classed('x', true).classed('grid', true).call(xAxis2Grid);
-svg2.append("g").classed('y', true).classed('grid', true).call(yAxis2Grid);
-
-var groupSelect = document.getElementById('group-select');
-var groupSummary = document.getElementById('group-summary');
-
-groups.boy_names.forEach(function(group, i) {
-  option = document.createElement('option');
-  option.value = 'boy_names:'+i;
-  option.text = group.slice(0, 3).map(function(d) { return d.name; }).join(', ') + '...';
-  groupSelect.appendChild(option);
-});
-groups.girl_names.forEach(function(group, i) {
-  option = document.createElement('option');
-  option.value = 'girl_names:'+i;
-  option.text = group.slice(0, 3).map(function(d) { return d.name; }).join(', ') + '...';
-  groupSelect.appendChild(option);
-});
-groupSelect.onchange = function() {
-  window.redrawGroups();
-};
-window.redrawGroups = function() {
-  groupSelection = groupSelect.value.split(':');
-  groupGender = groupSelection[0];
-  groupIndex = groupSelection[1];
-  group = groups[groupGender][groupIndex];
-
-  names = group.map(function(d) { return d.name; });
-
-  color = d3.scale.category10();
-  color.domain(names);
-
-  svg2.selectAll("g.average").remove();
-  groupLine = d3.svg.line().interpolate("cardinal")
-    .x(function(d) { return x(d.decade); })
-    .y(function(d) { return y(d.average_rank); })
-  group.forEach(function(d) {
-    g2 = svg2.append("g").attr("class", "average");
-    g2.append("path")
-      .attr("d", groupLine(d.averages_by_decade))
-      .attr("class", "line")
-      .style("stroke", color(d.name))
-      .style("fill", "none");
-  });
-  groupSummary.innerHTML = names.map(function(n) { return "<span style='color:"+color(n)+";'>"+n+"</span>"; }).join(', ');
-}
-window.redrawGroups();
-//METRICS
