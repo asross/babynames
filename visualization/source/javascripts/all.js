@@ -9,6 +9,10 @@ var nameSelect = document.getElementById('all-names');
 var yearInput = document.getElementById('year');
 var rankInput = document.getElementById('rank');
 var rangeInput = document.getElementById('name-timeline');
+var genderSymbols = {
+  boy_names: '♂',
+  girl_names: '♀'
+};
 
 yearInput.value = 1880;
 rankInput.value = 1;
@@ -67,7 +71,7 @@ document.onkeydown = function() {
   step(event.keyIdentifier);
 }
 
-var margin = {top: 20, right: 80, bottom: 30, left: 50},
+var margin = {top: 20, right: 120, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 var x = d3.scale.linear().range([0, width]);
@@ -167,7 +171,7 @@ window.redraw = function() {
   circle.attr("transform", "translate(" + x(year) +"," + y(rank) + ")");
 
   if (metricsByName[gender][currentName]) {
-    window.plotNames(similarities, metricsByName[gender][currentName].closest_names);
+    window.plotNames(similarities, metricsByName[gender][currentName].closest_names.slice(0,15));
   } else {
     window.plotNames(similarities, []);
   }
@@ -178,18 +182,69 @@ window.plotNames = function(chart, nameGenderPairs) {
   color = d3.scale.category10();
   color.domain(nameGenderPairs.map(function(n) { return n[2]; }));
 
-  chart.selectAll("g.name-line").remove();
-
-  nameGenderPairs.slice(0, 15).forEach(function(n) {
+  data = nameGenderPairs.map(function(n) {
     gender = n[1];
     name = n[2];
-    var gg = chart.append("g").attr("class", "name-line");
-    gg.append("path")
-      .attr("d", line(metricsByName[gender][name].ten_year_averages))
-      .attr("class", "line")
-      .style("stroke", color(name))
-      .style("fill", "none");
+    return { name: name, gender: gender, values: metricsByName[gender][name].five_year_averages };
   });
+
+  hoverIn = function(d,i) {
+    prefix = d.gender+"-"+d.name;
+    d3.selectAll('.legend').style("opacity", "0.1");
+    d3.selectAll('.name-line').style("opacity", "0.1");
+    d3.select("#legend-"+prefix).style("opacity", "1");
+    d3.select("#line-"+prefix).style("opacity", "1");
+  }
+  hoverOut = function(d,i) {
+    d3.selectAll('.legend').style("opacity", "1");
+    d3.selectAll('.name-line').style("opacity", "1");
+  }
+
+  lines = chart.selectAll(".name-line").data(data, function(d) { return d.name; });
+  lineEnter = lines.enter().append("g")
+    .attr("class", "name-line")
+    .style('cursor', 'pointer')
+    .attr("id", function(d) { return "line-"+d.gender+"-"+d.name; })
+    .on("mouseover", hoverIn)
+    .on("mouseout", hoverOut);
+  lineEnter.append("path")
+    .style("fill", "none")
+    .attr("class", "line")
+    .style("stroke", function(d) { return color(d.name); })
+    .attr("d", function(d) { return line(d.values); });
+  lines.exit().remove();
+
+  legend = chart.selectAll(".legend").data(data, function(d, i) { return d.gender + d.name + i; });
+  legendEnter = legend.enter().append("g")
+    .attr("id", function(d) { return "legend-"+d.gender+"-"+d.name; })
+    .attr('class', 'legend');
+  legendEnter.append('circle')
+    .attr('cx', width+20)
+    .attr('cy', function(d,i) { return 30*i })
+    .attr('r', 7)
+    .style('fill', function(d) { return color(d.name); })
+    .on("mouseover", hoverIn)
+    .on("mouseout", hoverOut);
+  legendEnter.append('text')
+    .attr('x', width+20)
+    .attr('y', function(d,i) { return 30*i })
+    .attr('dy', '0.33em')
+    .attr('dx', '-0.33em')
+    .style('fill', 'white')
+    .style('font-size', 'x-small')
+    .text(function(d) { return genderSymbols[d.gender]; });
+  legendEnter.append('text')
+    .attr('x', width+20+10)
+    .attr('y', function(d,i) { return 30*i })
+    .attr('dy', '0.33em')
+    .style('cursor', 'pointer')
+    .style('fill', function(d) { return color(d.name); })
+    .text(function(d) { return d.name; })
+    .on("mouseover", hoverIn)
+    .on("mouseout", hoverOut);
+  legend.exit().remove();
+
+
 };
 
 console.log('starting!');
