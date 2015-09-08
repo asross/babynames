@@ -73,10 +73,6 @@ helpers do
   def metrics_by_name
     File.read("#{root}/../metrics_by_name.json")
   end
-
-  def groups
-    File.read("#{root}/../groups.json")
-  end
 end
 
 # Build-specific configuration
