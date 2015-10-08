@@ -33,7 +33,26 @@ input[type=number] {
 }
 
 .noUi-connect.noUi-dragable {
-  cursor: col-resize;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.noUi-connect.noUi-dragable:hover {
+  background: #59D2C9;
+}
+
+.noUi-state-drag .noUi-connect.noUi-dragable {
+  background: #269F96;
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+}
+
+.noUi-state-drag {
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
 }
 
 .noUi-handle {
