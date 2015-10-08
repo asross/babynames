@@ -73,8 +73,8 @@ def distance_between_averages(m1, m2)
   distance
 end
 
-data_by_year = { boy_names: {}, girl_names: {} }
-data_by_name = { boy_names: {}, girl_names: {} }
+data_by_year = { m: {}, f: {} }
+data_by_name = { m: {}, f: {} }
 decades = 188.upto(201).to_a
 fiveyrs = 376.upto(402).to_a
 
@@ -88,16 +88,16 @@ fiveyrs = 376.upto(402).to_a
     boy_percent = boy_percent.sub(/%$/, '').to_f
     girl_percent = girl_percent.sub(/%$/, '').to_f
 
-    (data_by_year[:boy_names][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
-    (data_by_year[:girl_names][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
+    (data_by_year[:m][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
+    (data_by_year[:f][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
 
-    (data_by_name[:boy_names][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
-    (data_by_name[:girl_names][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
+    (data_by_name[:m][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
+    (data_by_name[:f][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
   end
 end
 
 # compute some metrics about the data (such as smoothed averages, changes over time, etc)
-metrics_by_name = { boy_names: {}, girl_names: {} }
+metrics_by_name = { m: {}, f: {} }
 metrics_by_name.each do |gender, metrics|
   data_by_name[gender].each do |name, data|
     m = {}
@@ -146,6 +146,7 @@ metrics_by_name.each do |gender, metrics|
     # by different amounts but in the same direction.
     m[:ten_year_change_summary] = decay_profile(ten_year_changes)
     m[:five_year_change_summary] = decay_profile(five_year_changes)
+    m[:closest_names] = []
 
     metrics[name] = m
   end
@@ -154,9 +155,9 @@ end
 # now compute closest names -- but only for names that are reasonably popular,
 # because you have to compare every name to every other, which grows like n^2
 all_metrics = []
-all_metrics += metrics_by_name[:boy_names].map{|name, m| [:boy_names, m] }
-all_metrics += metrics_by_name[:girl_names].map{|name, m| [:girl_names, m] }
-all_metrics.select!{|g, m| m[:area_under_curve] > 20000 }
+all_metrics += metrics_by_name[:m].map{|name, metrics| [:m, metrics] }
+all_metrics += metrics_by_name[:f].map{|name, metrics| [:f, metrics] }
+all_metrics.select!{|g, metrics| metrics[:area_under_curve] > 20000 }
 
 # compute both the distance between their (simplified) changes
 # and the distance between their actual popularities, smoothed over decades.

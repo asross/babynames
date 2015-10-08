@@ -1,3 +1,7 @@
+window.genderSymbols = { m: '♂', f: '♀' }
+window.genderLabels = { m: 'Boy Names', f: 'Girl Names' }
+window.genderStubs = { m: 'boy', f: 'girl' }
+
 window.roundTo = (closestN, num) ->
   closestN * Math.round(num / closestN)
 
@@ -32,8 +36,8 @@ window.$churnBoth = $('#churn-both')
 window.$churnMale = $('#churn-male')
 window.$churnFemale = $('#churn-female')
 
-window.risingNamesChart = new NameChart(document.getElementById('rising-names'))
-window.fallingNamesChart = new NameChart(document.getElementById('falling-names'))
+window.risingNamesChart = new NameChart document.getElementById('rising-names'), sanitizeLine: (line) -> line
+window.fallingNamesChart = new NameChart document.getElementById('falling-names'), sanitizeLine: (line) -> line
 
 window.mapChurn = (arr) ->
   arr.map (el) ->
@@ -73,13 +77,13 @@ window.redrawChurn = ->
   ])
 
   if $churnBoth.hasClass('active')
-    genders = ['boy_names', 'girl_names']
+    genders = ['m', 'f']
     nameText = 'Names'
   else if $churnMale.hasClass('active')
-    genders = ['boy_names']
+    genders = ['m']
     nameText = genderLabels[genders[0]]
   else if $churnFemale.hasClass('active')
-    genders = ['girl_names']
+    genders = ['f']
     nameText = genderLabels[genders[0]]
 
   window.namesWithMostChurn = namesByChurn(y1, y2, genders)

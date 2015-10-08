@@ -81,9 +81,6 @@ class NameChart extends Chart
   defined: (d) -> d.year >= @xDomain[0] and d.year <= @xDomain[1] and (!d.rank || d.rank <= 1000) and d.percentage > 0
 
   sanitizeLine: (line) ->
-    return line if line.length == 1
-    return line if line[1].year - line[0].year == 10
-    return line if line[1].year - line[0].year == 5
     prevYear = line[0].year - 1
     newLine = []
     for point in line

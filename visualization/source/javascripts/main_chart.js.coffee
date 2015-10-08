@@ -1,3 +1,7 @@
+window.genderSymbols = { m: '♂', f: '♀' }
+window.genderLabels = { m: 'Boy Names', f: 'Girl Names' }
+window.genderStubs = { m: 'boy', f: 'girl' }
+
 window.nameSelect = document.getElementById('name')
 window.yearInput = document.getElementById('year-input')
 window.rankInput = document.getElementById('rank-input')
@@ -49,14 +53,14 @@ $pctgScale.click ->
 
 $maleGenderButton = $('#gender-male')
 $maleGenderButton.click ->
-  name = dataByYear['boy_names'][yearInput.value][rankInput.value - 1].name
-  nameSelect.value = JSON.stringify(gender: 'boy_names', name: name)
+  name = dataByYear['m'][yearInput.value][rankInput.value - 1].name
+  nameSelect.value = JSON.stringify(gender: 'm', name: name)
   redraw()
 
 $femaleGenderButton = $('#gender-female')
 $femaleGenderButton.click ->
-  name = dataByYear['girl_names'][yearInput.value][rankInput.value - 1].name
-  nameSelect.value = JSON.stringify(gender: 'girl_names', name: name)
+  name = dataByYear['f'][yearInput.value][rankInput.value - 1].name
+  nameSelect.value = JSON.stringify(gender: 'f', name: name)
   redraw()
 
 stepInput.oninput = ->
@@ -146,7 +150,7 @@ window.redraw = ->
     $rankScale.removeClass('active')
     mainChart.setTitle("% of #{genderStub}s named #{name}")
 
-  if currentGender() == 'boy_names'
+  if currentGender() == 'm'
     $maleGenderButton.addClass('active')
     $femaleGenderButton.removeClass('active')
   else
