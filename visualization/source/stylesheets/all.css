@@ -1,39 +1,9 @@
 /*
+ *= require bootstrap/dist/css/bootstrap.min
  *= require chosen/chosen.min
+ *= require nouislider
+ *= require chart-svg
+ *= require chart-controls
  */
 
 @charset "utf-8";
-
-h1 {
-  display: inline;
-}
-
-body {
-  padding: 1rem;
-}
-
-input[type='number'] {
-  font-size: 2em;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.x.axis path {
-  display: none;
-}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 4px;
-}
-
-.grid .tick {
-  stroke: lightgray !important;
-  opacity: 0.7 !important;
-}

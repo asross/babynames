@@ -1,0 +1,49 @@
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+   opacity: 1;
+   font-size: 1.7em;
+}
+
+input[type=number] {
+  width: 75px;
+}
+
+.form-control {
+  display: inline;
+  width: auto;
+}
+
+.main-chart-col {
+  position: relative;
+}
+
+.year-slider-wrapper {
+  width: 475px;
+  margin-left: 30px;
+}
+
+.rank-slider-wrapper {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+}
+
+.rank-slider-wrapper #rank-slider {
+  height: calc(475px / 1.618);
+}
+
+.noUi-connect.noUi-dragable {
+  cursor: col-resize;
+}
+
+.noUi-handle {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.noUi-handle.noUi-active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}

@@ -1,0 +1,92 @@
+%h1.page-header Popular Baby Names in the US, 1880-2014
+
+%p
+  This is a visualization and analysis of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
+
+%p
+  There's a lot of richness in the set, and it's possible to see the effects of real-world events ripple through the popularity curves (see Adolph and Arya), as well as longer-term gender and demographic trends.
+
+%h2.page-header Interactive Tool
+
+.panel.panel-default
+  .panel-heading
+    .row
+      .col-md-12
+        %p
+          Drag the sliders or the circle marker on the graph to explore. Right now, this is showing that:
+
+        .well
+          In
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2014'/>,
+          <select id='name'></select>
+          was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000'/>
+          most popular
+          .btn-group{style: 'display: inline-block'}
+            %button.btn.btn-default.btn-sm.active#gender-male= 'Boy'
+            %button.btn.btn-default.btn-sm#gender-female= 'Girl'
+          name
+          (<span class='current-percentage'></span>% of baby <span class='current-gender'></span>s were named <span class='current-name'></span> in <span class='current-year'></span>).
+
+        You can also change the scale:
+        .btn-group
+          %button.btn.btn-default.btn-sm.active#scale-rank{ title: 'Show Rank (Linear Scale)' }= 'Rank #'
+          %button.btn.btn-default.btn-sm#scale-percentage{ title: 'Show Percentage (Log Scale)' }= 'Percentage %'
+        %br
+
+        or the point along the path:
+        %input#step-input.form-control{type: 'number', step: 1, min: 0, max: 999}
+        %br
+
+        or the number of similarities:
+        %input#sims-input.form-control{type: 'number', step: 1, min: 1, max: 200, value: 15}
+
+  .panel-body
+    #main-chart-wrapper.row
+      .col-md-6.main-chart-col
+        .rank-slider-wrapper
+          #rank-slider
+        #main-chart
+        .year-slider-wrapper
+          #year-slider
+
+      .col-md-6
+        #similar-names
+
+%h2.page-header Greatest Changes
+
+.panel.panel-default
+  .panel-heading
+    .row#churn-controls
+      .col-md-12
+        %p
+          Here you can view the names whose popularity rose or fell the most over a particular duration. Right now, this is showing the:
+
+        .well
+          %input.form-control#min-churn-names{type: 'number', step: 1, min: 0, max: 200, value: 0}
+          to
+          %input.form-control#max-churn-names{type: 'number', step: 1, min: 0, max: 200, value: 20}
+          names that changed the most
+          from
+          %input.form-control#min-churn-years{type: 'number', step: 5, min: 1880, max: 2014, value: 1990}
+          to
+          %input.form-control#max-churn-years{type: 'number', step: 5, min: 1880, max: 2014, value: 2000}
+          for
+          .btn-group{style: 'display: inline-block'}
+            %button.btn.btn-default.btn-sm#churn-male= 'Boys'
+            %button.btn.btn-default.btn-sm#churn-female= 'Girls'
+            %button.btn.btn-default.btn-sm.active#churn-both= 'Both Genders'
+
+        You can also change time period using the slider:
+        %div{style: 'padding: 15px 12px 50px 12px'}
+          #churn-year-slider
+
+  .panel-body
+    .row
+      .col-md-6
+        #rising-names
+      .col-md-6
+        #falling-names
+
+%h3.page-header Acknowledgements
+
+%p This was made by <a href='https://github.com/asross'>Andrew Ross</a>, and the charts use the excellent library <a href='http://d3js.org'>d3.js</a>. The sliders use <a href='http://refreshless.com/nouislider'>noUiSlider</a> and the name select uses <a href='https://harvesthq.github.io/chosen'>chosen</a>. You can check out the full source code for the visualization <a href='https://github.com/asross/babynames'>here</a>, and some details about how I'm calculating name similarity <a href='https://github.com/asross/babynames/tree/master/parse.rb'>here</a>. The main chart was loosely inspired by this visualization of <a href='http://fathom.info/fortune500'>Fortune 500 companies</a>.

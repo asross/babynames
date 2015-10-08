@@ -1,0 +1,55 @@
+svg {
+  overflow: visible !important;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text, .legend text {
+  font-size: small;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 4px;
+}
+
+.grid .tick {
+  stroke: lightgray !important;
+  opacity: 0.7 !important;
+}
+
+circle.marker {
+  fill: #1f77b4;
+  stroke: #333;
+}
+
+circle.marker:hover {
+  stroke: lightblue;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+circle.marker.dragging,
+circle.marker.dragging:hover {
+  fill: #333;
+  stroke: lightblue;
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+.legend text {
+  cursor: default;
+}
+
+#similar-names .legend text,
+#similar-names .name-line path,
+#similar-names .legend circle {
+  cursor: pointer;
+}

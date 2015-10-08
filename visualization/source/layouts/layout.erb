@@ -7,19 +7,24 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
 
     <!-- Use title if it's in the page YAML frontmatter -->
-    <title><%= current_page.data.title || "The Middleman" %></title>
+    <title>Popular Baby Names in the United States, 1880-2014</title>
 
     <%= stylesheet_link_tag "normalize", "all" %>
   </head>
 
-  <body class="<%= page_classes %>">
-    <%= yield %>
+  <body class="<%= page_classes %>" data-spy='scroll' data-target='.scrollspy'>
+    <div class='container'>
+      <%= yield %>
+    </div>
   </body>
 
   <script>
+    window.genderSymbols = { boy_names: '♂', girl_names: '♀' };
+    window.genderColors = { boy_names: '#25AAE2', girl_names: '#F174AE' };
+    window.genderLabels = { boy_names: 'Boy Names', girl_names: 'Girl Names' };
+    window.genderStubs = { boy_names: 'boy', girl_names: 'girl' };
     window.dataByName = <%= data_by_name %>;
     window.dataByYear = <%= data_by_year %>;
-    window.metricsByName = <%= metrics_by_name %>;
   </script>
 
   <%= javascript_include_tag  "all" %>
