@@ -24,7 +24,7 @@ input[type=number] {
 
 .rank-slider-wrapper {
   position: absolute;
-  right: 10px;
+  left: 540px;
   top: 30px;
 }
 
