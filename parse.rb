@@ -41,11 +41,11 @@ data_by_name = { boy_names: {}, girl_names: {} }
     boy_percent = boy_percent.sub(/%$/, '').to_f
     girl_percent = girl_percent.sub(/%$/, '').to_f
 
-    (data_by_year[:boy_names][year] ||= []) << { rank: rank, name: boy_name, percent: boy_percent }
-    (data_by_year[:girl_names][year] ||= []) << { rank: rank, name: girl_name, percent: girl_percent }
+    (data_by_year[:boy_names][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
+    (data_by_year[:girl_names][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
 
-    (data_by_name[:boy_names][boy_name] ||= []) << { year: year, rank: rank, percent: boy_percent }
-    (data_by_name[:girl_names][girl_name] ||= []) << { year: year, rank: rank, percent: girl_percent }
+    (data_by_name[:boy_names][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
+    (data_by_name[:girl_names][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
   end
 end
 
@@ -84,6 +84,14 @@ def distance_between_change_summaries(m1, m2)
   distance
 end
 
+def distance_between_averages(m1, m2)
+  distance = 0
+  m1.zip(m2).each do |action1, action2|
+    distance += Math.sqrt (action1[:rank] - action2[:rank]).abs
+  end
+  distance
+end
+
 decades = 188.upto(201).to_a
 fiveyrs = 376.upto(402).to_a
 
@@ -92,6 +100,7 @@ metrics_by_name.each do |gender, metrics|
   data_by_name[gender].each do |name, data|
     m = {}
     m[:name] = name
+    m[:data] = data
 
     ten_year_data = Hash[decades.map { |i| [i, []] }]
     five_year_data = Hash[fiveyrs.map { |i| [i, []] }]
@@ -105,8 +114,16 @@ metrics_by_name.each do |gender, metrics|
 
     m[:area_under_curve] = area_under_curve
 
-    ten_year_averages = ten_year_data.map { |yr, points| { year: 10*yr, rank: points.average_by(:rank, 1000) } }
-    five_year_averages = five_year_data.map { |yr, points| { year: 5*yr, rank: points.average_by(:rank, 1000) } }
+    ten_year_averages = ten_year_data.map { |yr, points| {
+      year: 10*yr,
+      rank: points.average_by(:rank, 1000),
+      percentage: points.average_by(:percentage, 0)
+    }}
+    five_year_averages = five_year_data.map { |yr, points| {
+      year: 5*yr,
+      rank: points.average_by(:rank, 1000),
+      percentage: points.average_by(:percentage, 0)
+    }}
 
     m[:ten_year_averages] = ten_year_averages
     m[:five_year_averages] = five_year_averages
@@ -129,17 +146,30 @@ end
 all_metrics = []
 all_metrics += metrics_by_name[:boy_names].map{|name, m| [:boy_names, m] }
 all_metrics += metrics_by_name[:girl_names].map{|name, m| [:girl_names, m] }
-all_metrics.select!{|g, m| m[:area_under_curve] > 50000 }
+all_metrics.select!{|g, m| m[:area_under_curve] > 20000 }
 
-key = :ten_year_change_summary
+ckey = :ten_year_change_summary
+akey = :ten_year_averages
 all_metrics.each do |gender1, metric1|
   closest = SortedSet.new
   all_metrics.each do |gender2, metric2|
     next if gender1 == gender2 && metric1[:name] == metric2[:name]
-    distance = distance_between_change_summaries(metric1[key], metric2[key])
+    distance1 = distance_between_change_summaries(metric1[ckey], metric2[ckey])
+    distance2 = distance_between_averages(metric1[akey], metric2[akey])
+    distance = 0.7*distance1 + 0.3*distance2
     closest << [distance, gender2, metric2[:name]]
   end
   metric1[:closest_names] = closest.to_a[0..100]
+end
+
+# delete what we don't need so the payload is smaller
+metrics_by_name.each do |gender, mbn|
+  mbn.each do |name, metrics|
+    metrics.delete(:ten_year_changes)
+    metrics.delete(:ten_year_change_summary)
+    metrics.delete(:five_year_changes)
+    metrics.delete(:five_year_change_summary)
+  end
 end
 
 File.open("./data_by_year.json", "wb") do |f|
@@ -147,9 +177,5 @@ File.open("./data_by_year.json", "wb") do |f|
 end
 
 File.open("./data_by_name.json", "wb") do |f|
-  f.write JSON.dump(data_by_name)
-end
-
-File.open("./metrics_by_name.json", "wb") do |f|
   f.write JSON.dump(metrics_by_name)
 end
