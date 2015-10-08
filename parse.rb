@@ -42,33 +42,10 @@ def changes(list, time_key, value_key)
   end
 end
 
-def decay_profile(trend, bin_size = 30, importance = 1.5)
-  trend.map do |c|
-    number = 0
-    [3, 2, 1, 0.5, 0.25].each do |n|
-      break if number != 0
-      if c[:change] < -bin_size*n
-        number = n*importance
-      elsif c[:change] > bin_size*n
-        number = -n*importance
-      end
-    end
-    number
-  end
-end
-
-def distance_between_change_summaries(m1, m2)
+def distance_between(k, m1, m2)
   distance = 0
   m1.zip(m2).each do |action1, action2|
-    distance += Math.sqrt (action1 - action2).abs
-  end
-  distance
-end
-
-def distance_between_averages(m1, m2)
-  distance = 0
-  m1.zip(m2).each do |action1, action2|
-    distance += Math.sqrt (action1[:rank] - action2[:rank]).abs
+    distance += Math.sqrt (action1[k] - action2[k]).abs
   end
   distance
 end
@@ -141,11 +118,7 @@ metrics_by_name.each do |gender, metrics|
     m[:ten_year_changes] = ten_year_changes
     m[:five_year_changes] = five_year_changes
 
-    # also precompute a simplified version of the changes, with bucketed
-    # increments. This will let us consider as similar names that change
-    # by different amounts but in the same direction.
-    m[:ten_year_change_summary] = decay_profile(ten_year_changes)
-    m[:five_year_change_summary] = decay_profile(five_year_changes)
+    # initialize the closest names list
     m[:closest_names] = []
 
     metrics[name] = m
@@ -159,19 +132,35 @@ all_metrics += metrics_by_name[:m].map{|name, metrics| [:m, metrics] }
 all_metrics += metrics_by_name[:f].map{|name, metrics| [:f, metrics] }
 all_metrics.select!{|g, metrics| metrics[:area_under_curve] > 20000 }
 
-# compute both the distance between their (simplified) changes
+# compute both the distance between their changes
 # and the distance between their actual popularities, smoothed over decades.
 # Then compute the version of distance we will use as a weighted
 # average of both of those distances. Store the most similar 100 names.
-ckey = :ten_year_change_summary
+ckey = :ten_year_changes
 akey = :ten_year_averages
+cdists = []
+adists = []
+
+all_metrics.each do |gender1, metric1|
+  all_metrics.each do |gender2, metric2|
+    next if gender1 == gender2 && metric1[:name] == metric2[:name]
+    cdists << distance_between(:change, metric1[ckey], metric2[ckey])
+    adists << distance_between(:rank, metric1[akey], metric2[akey])
+  end
+end
+
+# compute the average value of each distance metric
+# for normalization
+avg_cdist = cdists.mean
+avg_adist = adists.mean
+
 all_metrics.each do |gender1, metric1|
   closest = SortedSet.new
   all_metrics.each do |gender2, metric2|
     next if gender1 == gender2 && metric1[:name] == metric2[:name]
-    distance1 = distance_between_change_summaries(metric1[ckey], metric2[ckey])
-    distance2 = distance_between_averages(metric1[akey], metric2[akey])
-    distance = 0.7*distance1 + 0.3*distance2
+    cdist = distance_between(:change, metric1[ckey], metric2[ckey]) / avg_cdist
+    adist = distance_between(:rank, metric1[akey], metric2[akey]) / avg_adist
+    distance = 0.3*cdist + 0.7*adist
     closest << [distance, gender2, metric2[:name]]
   end
   metric1[:closest_names] = closest.to_a[0..100]
@@ -181,9 +170,7 @@ end
 metrics_by_name.each do |gender, mbn|
   mbn.each do |name, metrics|
     metrics.delete(:ten_year_changes)
-    metrics.delete(:ten_year_change_summary)
     metrics.delete(:five_year_changes)
-    metrics.delete(:five_year_change_summary)
   end
 end
 
