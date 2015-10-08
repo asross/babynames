@@ -1,4 +1,5 @@
 *.json
+!/visualization/*.json
 raw/*.html
 visualization/.bundle
 visualization/vendor/bundle

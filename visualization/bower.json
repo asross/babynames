@@ -1,0 +1,15 @@
+{
+  "name": "Baby Names in the United States, 1880-2014",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "source/bower_components"
+  ],
+  "dependencies": {
+    "d3": "~3.5",
+    "chosen": "~1.4.2",
+    "nouislider": "~8.0.2",
+    "bootstrap": "~3.3.5"
+  }
+}
