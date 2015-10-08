@@ -30,25 +30,6 @@ module Enumerable
   end
 end
 
-data_by_year = { boy_names: {}, girl_names: {} }
-data_by_name = { boy_names: {}, girl_names: {} }
-
-1880.upto(2014).each do |year|
-  html = File.read("./raw/#{year}.html")
-  html.scan(/<tr align="right">(?:\s*<td>[\w,.%]+<\/td>\s*)+<\/tr>/).each do |row|
-    rank, boy_name, boy_percent, girl_name, girl_percent = row.scan(/<td>([\w,.%]+)<\/td>/).flatten
-    rank = rank.to_i
-    boy_percent = boy_percent.sub(/%$/, '').to_f
-    girl_percent = girl_percent.sub(/%$/, '').to_f
-
-    (data_by_year[:boy_names][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
-    (data_by_year[:girl_names][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
-
-    (data_by_name[:boy_names][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
-    (data_by_name[:girl_names][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
-  end
-end
-
 def changes(list, time_key, value_key)
   prev_period = list[0]
   list[1..-1].each_with_object([]) do |this_period, results|
@@ -92,9 +73,30 @@ def distance_between_averages(m1, m2)
   distance
 end
 
+data_by_year = { boy_names: {}, girl_names: {} }
+data_by_name = { boy_names: {}, girl_names: {} }
 decades = 188.upto(201).to_a
 fiveyrs = 376.upto(402).to_a
 
+# parse the HTML tables scraped from ssa.gov to get the data in a form we can use.
+# Store it both by name and by year for easy lookup.
+1880.upto(2014).each do |year|
+  html = File.read("./raw/#{year}.html")
+  html.scan(/<tr align="right">(?:\s*<td>[\w,.%]+<\/td>\s*)+<\/tr>/).each do |row|
+    rank, boy_name, boy_percent, girl_name, girl_percent = row.scan(/<td>([\w,.%]+)<\/td>/).flatten
+    rank = rank.to_i
+    boy_percent = boy_percent.sub(/%$/, '').to_f
+    girl_percent = girl_percent.sub(/%$/, '').to_f
+
+    (data_by_year[:boy_names][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
+    (data_by_year[:girl_names][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
+
+    (data_by_name[:boy_names][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
+    (data_by_name[:girl_names][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
+  end
+end
+
+# compute some metrics about the data (such as smoothed averages, changes over time, etc)
 metrics_by_name = { boy_names: {}, girl_names: {} }
 metrics_by_name.each do |gender, metrics|
   data_by_name[gender].each do |name, data|
@@ -102,9 +104,12 @@ metrics_by_name.each do |gender, metrics|
     m[:name] = name
     m[:data] = data
 
+    # compute some five-year and ten-year averages;
+    # this can be displayed as smoothed data or used
+    # in calculating similarity.
     ten_year_data = Hash[decades.map { |i| [i, []] }]
     five_year_data = Hash[fiveyrs.map { |i| [i, []] }]
-    area_under_curve = 0
+    area_under_curve = 0 # also compute the area under the curve, so we can rank overall popularity over the whole period
 
     data.each do |d|
       area_under_curve += 1000 - d[:rank]
@@ -119,6 +124,7 @@ metrics_by_name.each do |gender, metrics|
       rank: points.average_by(:rank, 1000),
       percentage: points.average_by(:percentage, 0)
     }}
+
     five_year_averages = five_year_data.map { |yr, points| {
       year: 5*yr,
       rank: points.average_by(:rank, 1000),
@@ -128,26 +134,34 @@ metrics_by_name.each do |gender, metrics|
     m[:ten_year_averages] = ten_year_averages
     m[:five_year_averages] = five_year_averages
 
+    # now compute the derivatives; by how much did the popularity
+    # change each decade/five-year-period?
     ten_year_changes = changes(ten_year_averages, :year, :rank)
     five_year_changes = changes(five_year_averages, :year, :rank)
-
     m[:ten_year_changes] = ten_year_changes
     m[:five_year_changes] = five_year_changes
 
+    # also precompute a simplified version of the changes, with bucketed
+    # increments. This will let us consider as similar names that change
+    # by different amounts but in the same direction.
     m[:ten_year_change_summary] = decay_profile(ten_year_changes)
     m[:five_year_change_summary] = decay_profile(five_year_changes)
-
-    m[:closest_names] = []
 
     metrics[name] = m
   end
 end
 
+# now compute closest names -- but only for names that are reasonably popular,
+# because you have to compare every name to every other, which grows like n^2
 all_metrics = []
 all_metrics += metrics_by_name[:boy_names].map{|name, m| [:boy_names, m] }
 all_metrics += metrics_by_name[:girl_names].map{|name, m| [:girl_names, m] }
 all_metrics.select!{|g, m| m[:area_under_curve] > 20000 }
 
+# compute both the distance between their (simplified) changes
+# and the distance between their actual popularities, smoothed over decades.
+# Then compute the version of distance we will use as a weighted
+# average of both of those distances. Store the most similar 100 names.
 ckey = :ten_year_change_summary
 akey = :ten_year_averages
 all_metrics.each do |gender1, metric1|
@@ -172,6 +186,7 @@ metrics_by_name.each do |gender, mbn|
   end
 end
 
+# write it out to a JSON file
 File.open("./data_by_year.json", "wb") do |f|
   f.write JSON.dump(data_by_year)
 end
