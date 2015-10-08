@@ -66,3 +66,8 @@ input[type=number] {
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 }
+
+.spinner {
+  position: relative;
+  height: 5em;
+}

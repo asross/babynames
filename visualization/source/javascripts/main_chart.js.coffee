@@ -200,3 +200,5 @@ rankSlider.noUiSlider.on 'slide', (values, handle, unencoded) ->
 yearSlider.noUiSlider.on 'slide', (values, handle, unencoded) ->
   yearInput.value = parseInt(unencoded)
   window.redraw()
+
+$('#main-chart-spinner').remove()

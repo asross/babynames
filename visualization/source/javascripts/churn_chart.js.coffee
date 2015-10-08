@@ -106,3 +106,4 @@ $('#churn-controls .btn-group button').click ->
   $(@).addClass('active')
   redrawChurn()
 
+$('#churn-chart-spinner').remove()

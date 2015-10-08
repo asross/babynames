@@ -17,15 +17,15 @@
 
         .well
           In
-          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2014'/>,
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2014' value='1880'/>,
           <select id='name'></select>
-          was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000'/>
+          was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000' value='1'/>
           most popular
           .btn-group{style: 'display: inline-block'}
             %button.btn.btn-default.btn-sm.active#gender-male= 'Boy'
             %button.btn.btn-default.btn-sm#gender-female= 'Girl'
           name
-          (<span class='current-percentage'></span>% of baby <span class='current-gender'></span>s were named <span class='current-name'></span> in <span class='current-year'></span>).
+          (<span class='current-percentage'>8.1546</span>% of baby <span class='current-gender'>boy</span>s were named <span class='current-name'>John</span> in <span class='current-year'>1880</span>).
 
         You can also change the scale:
         .btn-group
@@ -34,13 +34,16 @@
         %br
 
         or the point along the path:
-        %input#step-input.form-control{type: 'number', step: 1, min: 0, max: 999}
+        %input#step-input.form-control{type: 'number', step: 1, min: 0, max: 999, value: 0}
         %br
 
         or the number of similarities:
         %input#sims-input.form-control{type: 'number', step: 1, min: 1, max: 200, value: 15}
 
   .panel-body
+    #main-chart-spinner.spinner
+    %script
+      new Spinner().spin(document.getElementById('main-chart-spinner'))
     #main-chart-wrapper.row
       .col-md-6.main-chart-col
         .rank-slider-wrapper
@@ -81,6 +84,9 @@
           #churn-year-slider
 
   .panel-body
+    #churn-chart-spinner.spinner
+    %script
+      new Spinner().spin(document.getElementById('churn-chart-spinner'))
     .row
       .col-md-6
         #rising-names
