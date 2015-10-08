@@ -7,4 +7,5 @@ visualization/bower_components
 visualization/build
 visualization/.sass-cache
 visualization/cache
+*.env
 .DS_Store
