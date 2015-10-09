@@ -4,4 +4,5 @@
 //= require nouislider
 //= require helpers
 //= require chart
-//= require_tree .
+//= require main_chart
+//= require churn_chart
