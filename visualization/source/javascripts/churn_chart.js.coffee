@@ -10,7 +10,7 @@ for gender, actualDataByName of dataByName
     info.f = []
     for lustrum, ranks of buckets
       rank = ranks.concat([1000,1000,1000,1000,1000]).slice(0, 5).mean()
-      info.f.push(rank)
+      info.f.push([lustrum, rank])
 
 window.namesByChurn = (minLustrum, maxLustrum, genders) ->
   result = []
@@ -21,8 +21,8 @@ window.namesByChurn = (minLustrum, maxLustrum, genders) ->
     for name, metrics of dataByName[gender]
       continue unless metrics.a >= minAuc
       averages = metrics.f
-      pre = averages[lustrums.indexOf(minLustrum)]
-      post = averages[lustrums.indexOf(maxLustrum)]
+      pre = averages[lustrums.indexOf(minLustrum)][1]
+      post = averages[lustrums.indexOf(maxLustrum)][1]
       continue unless pre < 998
       churn = post - pre
       result.push([churn, gender, name])
@@ -37,12 +37,12 @@ window.$churnBoth = $('#churn-both')
 window.$churnMale = $('#churn-male')
 window.$churnFemale = $('#churn-female')
 
-window.risingNamesChart = new NameChart document.getElementById('rising-names')
-window.fallingNamesChart = new NameChart document.getElementById('falling-names')
+window.risingNamesChart = new NameChart document.getElementById('rising-names'), sanitizeLine: (l) -> l
+window.fallingNamesChart = new NameChart document.getElementById('falling-names'), sanitizeLine: (l) -> l
 
 window.mapChurn = (arr) ->
   arr.map (el) ->
-    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].d }
+    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].f }
 
 churnYearSlider = document.getElementById('churn-year-slider')
 noUiSlider.create(churnYearSlider, {

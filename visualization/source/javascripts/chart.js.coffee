@@ -78,7 +78,7 @@ class Chart
     @xAxisGrid.call(@xAxis.ticks(@xTickValues.length).tickFormat('').tickSize(-@height, 0).orient('top'))
 
 class NameChart extends Chart
-  defined: (d) -> yearOf(d) >= @xDomain[0] and yearOf(d) <= @xDomain[1] and (!rankOf(d) || rankOf(d) <= 1000) and pctgOf(d) > 0
+  defined: (d) -> yearOf(d) >= @xDomain[0] and yearOf(d) <= @xDomain[1] and (!rankOf(d) || rankOf(d) <= 1000) and (pctgOf(d) == undefined || pctgOf(d) > 0)
 
   sanitizeLine: (line) ->
     prevYear = yearOf(line[0]) - 1
