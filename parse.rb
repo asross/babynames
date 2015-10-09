@@ -65,8 +65,8 @@ fiveyrs = 376.upto(402).to_a
     boy_percent = boy_percent.sub(/%$/, '').to_f
     girl_percent = girl_percent.sub(/%$/, '').to_f
 
-    (data_by_year[:m][year] ||= []) << { rank: rank, name: boy_name, percentage: boy_percent }
-    (data_by_year[:f][year] ||= []) << { rank: rank, name: girl_name, percentage: girl_percent }
+    (data_by_year[:m][year] ||= []) << boy_name
+    (data_by_year[:f][year] ||= []) << girl_name
 
     (data_by_name[:m][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
     (data_by_name[:f][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
@@ -171,6 +171,8 @@ metrics_by_name.each do |gender, mbn|
   mbn.each do |name, metrics|
     metrics.delete(:ten_year_changes)
     metrics.delete(:five_year_changes)
+    metrics.delete(:ten_year_averages)
+    metrics[:five_year_averages].map! { |m| m[:rank] }
   end
 end
 

@@ -5,6 +5,8 @@ window.genderStubs = { m: 'boy', f: 'girl' }
 window.roundTo = (closestN, num) ->
   closestN * Math.round(num / closestN)
 
+window.lustrums = (x for x in [1880..2010] by 5)
+
 window.namesByChurn = (minLustrum, maxLustrum, genders) ->
   result = []
   minAuc = 1000
@@ -14,10 +16,10 @@ window.namesByChurn = (minLustrum, maxLustrum, genders) ->
     for name, metrics of dataByName[gender]
       continue unless metrics.area_under_curve >= minAuc
       averages = metrics.five_year_averages
-      pre = averages.find((el) -> el.year == minLustrum)
-      post = averages.find((el) -> el.year == maxLustrum)
-      continue unless pre.rank < 998
-      churn = post.rank - pre.rank
+      pre = averages[lustrums.indexOf(minLustrum)]
+      post = averages[lustrums.indexOf(maxLustrum)]
+      continue unless pre < 998
+      churn = post - pre
       result.push([churn, gender, name])
 
   result.sort((a, b) -> a[0] - b[0])
@@ -36,12 +38,12 @@ window.$churnBoth = $('#churn-both')
 window.$churnMale = $('#churn-male')
 window.$churnFemale = $('#churn-female')
 
-window.risingNamesChart = new NameChart document.getElementById('rising-names'), sanitizeLine: (line) -> line
-window.fallingNamesChart = new NameChart document.getElementById('falling-names'), sanitizeLine: (line) -> line
+window.risingNamesChart = new NameChart document.getElementById('rising-names')
+window.fallingNamesChart = new NameChart document.getElementById('falling-names')
 
 window.mapChurn = (arr) ->
   arr.map (el) ->
-    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].five_year_averages }
+    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].data }
 
 churnYearSlider = document.getElementById('churn-year-slider')
 noUiSlider.create(churnYearSlider, {
