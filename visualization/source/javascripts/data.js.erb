@@ -1,2 +1,16 @@
 window.dataByName = <%= data_by_name %>;
 window.dataByYear = <%= data_by_year %>;
+
+Object.keys(dataByYear).forEach(function(gender) {
+  Object.keys(dataByYear[gender]).forEach(function(year) {
+    for (i = 0; i < dataByYear[gender][year].length; i++) {
+      name = dataByYear[gender][year][i][0];
+      pctg = dataByYear[gender][year][i][1];
+      rank = i + 1;
+      if (!dataByName[gender][name].d)
+        dataByName[gender][name].d = [];
+      dataByName[gender][name].d.push([parseInt(year), rank, pctg]);
+      dataByYear[gender][year][i] = name;
+    }
+  });
+});

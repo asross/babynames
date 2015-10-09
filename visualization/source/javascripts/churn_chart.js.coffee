@@ -1,5 +1,17 @@
 window.lustrums = (x for x in [1880..2010] by 5)
 
+for gender, actualDataByName of dataByName
+  for name, info of actualDataByName
+    buckets = {}
+    buckets[lustrum] = [] for lustrum in lustrums
+    info.d.forEach (point) ->
+      lustrum = roundDownTo 5, yearOf(point)
+      buckets[lustrum].push rankOf(point)
+    info.f = []
+    for lustrum, ranks of buckets
+      rank = ranks.concat([1000,1000,1000,1000,1000]).slice(0, 5).mean()
+      info.f.push(rank)
+
 window.namesByChurn = (minLustrum, maxLustrum, genders) ->
   result = []
   minAuc = 1000

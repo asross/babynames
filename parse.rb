@@ -65,8 +65,8 @@ fiveyrs = 376.upto(402).to_a
     boy_percent = boy_percent.sub(/%$/, '').to_f
     girl_percent = girl_percent.sub(/%$/, '').to_f
 
-    (data_by_year[:m][year] ||= []) << boy_name
-    (data_by_year[:f][year] ||= []) << girl_name
+    (data_by_year[:m][year] ||= []) << [boy_name, boy_percent]
+    (data_by_year[:f][year] ||= []) << [girl_name, girl_percent]
 
     (data_by_name[:m][boy_name] ||= []) << { year: year, rank: rank, percentage: boy_percent }
     (data_by_name[:f][girl_name] ||= []) << { year: year, rank: rank, percentage: girl_percent }
@@ -172,9 +172,8 @@ metrics_by_name.each do |gender, mbn|
     metrics.delete(:ten_year_changes)
     metrics.delete(:five_year_changes)
     metrics.delete(:ten_year_averages)
-    metrics[:five_year_averages].map! { |m| m[:rank] }
-    metrics[:f] = metrics.delete(:five_year_averages)
-    metrics[:d] = metrics.delete(:data).map { |d| d.values_at(:year, :rank, :percentage) }
+    metrics.delete :five_year_averages
+    metrics.delete :data
     metrics[:a] = metrics.delete(:area_under_curve)
     metrics[:c] = metrics.delete(:closest_names).map { |cn| [cn[1], cn[2]] }
   end
