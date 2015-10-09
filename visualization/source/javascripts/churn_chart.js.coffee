@@ -1,10 +1,3 @@
-window.genderSymbols = { m: '♂', f: '♀' }
-window.genderLabels = { m: 'Boy Names', f: 'Girl Names' }
-window.genderStubs = { m: 'boy', f: 'girl' }
-
-window.roundTo = (closestN, num) ->
-  closestN * Math.round(num / closestN)
-
 window.lustrums = (x for x in [1880..2010] by 5)
 
 window.namesByChurn = (minLustrum, maxLustrum, genders) ->
@@ -14,8 +7,8 @@ window.namesByChurn = (minLustrum, maxLustrum, genders) ->
   maxLustrum = roundTo(5, maxLustrum)
   for gender in genders
     for name, metrics of dataByName[gender]
-      continue unless metrics.area_under_curve >= minAuc
-      averages = metrics.five_year_averages
+      continue unless metrics.a >= minAuc
+      averages = metrics.f
       pre = averages[lustrums.indexOf(minLustrum)]
       post = averages[lustrums.indexOf(maxLustrum)]
       continue unless pre < 998
@@ -23,12 +16,6 @@ window.namesByChurn = (minLustrum, maxLustrum, genders) ->
       result.push([churn, gender, name])
 
   result.sort((a, b) -> a[0] - b[0])
-
-Array.prototype.revslice = (min, max) ->
-  if min == 0
-    this.slice(-max)
-  else
-    this.slice(-max, -min)
 
 window.minNamesInput = document.getElementById('min-churn-names')
 window.maxNamesInput = document.getElementById('max-churn-names')
@@ -43,7 +30,7 @@ window.fallingNamesChart = new NameChart document.getElementById('falling-names'
 
 window.mapChurn = (arr) ->
   arr.map (el) ->
-    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].data }
+    { name: el[2], gender: el[1], values: dataByName[el[1]][el[2]].d }
 
 churnYearSlider = document.getElementById('churn-year-slider')
 noUiSlider.create(churnYearSlider, {

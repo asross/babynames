@@ -163,7 +163,7 @@ all_metrics.each do |gender1, metric1|
     distance = 0.3*cdist + 0.7*adist
     closest << [distance, gender2, metric2[:name]]
   end
-  metric1[:closest_names] = closest.to_a[0..100]
+  metric1[:closest_names] = closest.to_a[0..50]
 end
 
 # delete what we don't need so the payload is smaller
@@ -173,6 +173,10 @@ metrics_by_name.each do |gender, mbn|
     metrics.delete(:five_year_changes)
     metrics.delete(:ten_year_averages)
     metrics[:five_year_averages].map! { |m| m[:rank] }
+    metrics[:f] = metrics.delete(:five_year_averages)
+    metrics[:d] = metrics.delete(:data).map { |d| d.values_at(:year, :rank, :percentage) }
+    metrics[:a] = metrics.delete(:area_under_curve)
+    metrics[:c] = metrics.delete(:closest_names).map { |cn| [cn[1], cn[2]] }
   end
 end
 

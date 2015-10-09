@@ -8,8 +8,8 @@ class Chart
   yUnits: 'rank'
   xDomain: [1880, 2014]
   yDomain: [1000, 1]
-  x: (d) -> @xScale(d[@xUnits])
-  y: (d) -> @yScale(d[@yUnits])
+  x: (d) -> @xScale(yearOf(d))
+  y: (d) -> @yScale(if @yUnits == 'rank' then rankOf(d) else pctgOf(d))
   defined: (d) -> true
   yTickFormat: (d) -> d.toString()
   xTickFormat: (d) -> d.toString()
@@ -78,15 +78,15 @@ class Chart
     @xAxisGrid.call(@xAxis.ticks(@xTickValues.length).tickFormat('').tickSize(-@height, 0).orient('top'))
 
 class NameChart extends Chart
-  defined: (d) -> d.year >= @xDomain[0] and d.year <= @xDomain[1] and (!d.rank || d.rank <= 1000) and d.percentage > 0
+  defined: (d) -> yearOf(d) >= @xDomain[0] and yearOf(d) <= @xDomain[1] and (!rankOf(d) || rankOf(d) <= 1000) and pctgOf(d) > 0
 
   sanitizeLine: (line) ->
-    prevYear = line[0].year - 1
+    prevYear = yearOf(line[0]) - 1
     newLine = []
     for point in line
-      newLine.push(year: prevYear + 1, rank: 1001, percentage: 0) unless point.year == prevYear + 1
+      newLine.push(year: prevYear + 1, rank: 1001, percentage: 0) unless yearOf(point) == prevYear + 1
       newLine.push(point)
-      prevYear = point.year
+      prevYear = yearOf(point)
     newLine
 
   seriesSuffix: (d) ->

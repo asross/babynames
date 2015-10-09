@@ -30,9 +30,9 @@ window.currentGender = -> JSON.parse(nameSelect.value).gender
 window.currentName = -> JSON.parse(nameSelect.value).name
 
 nameSelect.onchange = ->
-  data = dataByName[currentGender()][currentName()].data
-  yearInput.value = data[0].year
-  rankInput.value = data[0].rank
+  data = dataByName[currentGender()][currentName()].d
+  yearInput.value = yearOf data[0]
+  rankInput.value = rankOf data[0]
   redraw()
 
 yearInput.oninput = -> redraw()
@@ -64,10 +64,10 @@ $femaleGenderButton.click ->
   redraw()
 
 stepInput.oninput = ->
-  data = dataByName[currentGender()][currentName()].data
+  data = dataByName[currentGender()][currentName()].d
   datum = data[parseInt(this.value)]
-  yearInput.value = datum.year
-  rankInput.value = datum.rank
+  yearInput.value = yearOf datum
+  rankInput.value = rankOf datum
   redraw()
 
 yearSlider = document.getElementById('year-slider')
@@ -112,18 +112,18 @@ window.redraw = ->
 
   name = dataByYear[gender][year][rank - 1]
   nameInfo = dataByName[gender][name]
-  data = nameInfo.data
+  data = nameInfo.d
 
   # compute point along path
   step = 0
   for datum in data
-    break if datum.year == year
+    break if yearOf(datum) == year
     step += 1
   stepInput.max = data.length - 1
   stepInput.value = step
 
   point = data[step]
-  percentage = point.percentage
+  percentage = pctgOf(point)
 
   yearSlider.noUiSlider.set(year)
   rankSlider.noUiSlider.set(rank)
@@ -139,7 +139,7 @@ window.redraw = ->
 
   mainChart.setScale(currentScale)
   mainChart.drawLine(data)
-  mainChart.drawCircle(data[step])
+  mainChart.drawCircle(point)
 
   if currentScale == 'rank'
     $rankScale.addClass('active')
@@ -157,18 +157,15 @@ window.redraw = ->
     $femaleGenderButton.addClass('active')
     $maleGenderButton.removeClass('active')
 
-  closestNames = nameInfo.closest_names.slice(0,simsInput.value).map (n) ->
-    { name: n[2], gender: n[1], values: dataByName[n[1]][n[2]].data }
+  closestNames = nameInfo.c.slice(0,simsInput.value).map (n) ->
+    { name: n[1], gender: n[0], values: dataByName[n[0]][n[1]].d }
 
   simChart.setScale(currentScale)
   simChart.drawSeries(closestNames)
-  if nameInfo.closest_names.length > 0
+  if nameInfo.c.length > 0
     simChart.setTitle "#{simsInput.value} names most similar to #{genderSymbol} #{name}"
   else
     simChart.setTitle "Not enough data for #{genderSymbol} #{name} to chart similarities"
-
-window.clamp = (n, min, max) ->
-  Math.min(Math.max(n, min), max)
 
 window.redraw()
 
