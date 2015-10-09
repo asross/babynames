@@ -2,7 +2,9 @@
 //= require jquery
 //= require chosen
 //= require nouislider
+//= require bootstrap
 //= require helpers
 //= require chart
 //= require main_chart
 //= require churn_chart
+//= require stories

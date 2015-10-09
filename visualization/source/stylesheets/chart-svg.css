@@ -53,3 +53,8 @@ circle.marker.dragging:hover {
 #similar-names .legend circle {
   cursor: pointer;
 }
+
+.vertical-line {
+  stroke: #333;
+  stroke-dasharray: 1px, 1px;
+}

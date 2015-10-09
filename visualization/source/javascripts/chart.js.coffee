@@ -152,11 +152,15 @@ class NameChart extends Chart
 
   legendClick: ->
     # no-op normally
+  
+  colorize: (d) ->
+    @color(@seriesSuffix(d))
 
   drawSeries: (data) ->
     @color = d3.scale.category10()
     @color.domain(data.map (d) => @seriesSuffix(d))
-    colorize = (d) => @color(@seriesSuffix(d))
+
+    colorize = (d) => @colorize(d)
 
     @fixMargins(data.length)
 

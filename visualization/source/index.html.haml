@@ -93,6 +93,68 @@
       .col-lg-6
         #falling-names
 
+%h2.page-header
+  = '...And Stop Calling Me Shirley!'
+  %small
+    %em Gender Drift
+
+.row
+  .col-lg-6
+    %p
+      Shirley was a popular unisex name until 1935,
+      when its male popularity plummeted.
+      This might have had something to do with Shirley Temple's debut film, #{link_to 'Bright Eyes', 'https://en.wikipedia.org/wiki/Bright_Eyes_(1934_film)'},
+      which came out in December of 1934.
+
+    %p
+      Many names have changed gender over time, but these changes are most often male-to-female.
+      One possible explanation for this asymmetry is that, because of gender inequalities, women fare better when they take masculine names (while men fare worse with feminine ones).
+      This matches up with many of our lived experiences and is supported by many
+      #{link_to 'stories', 'http://jezebel.com/homme-de-plume-what-i-learned-sending-my-novel-out-und-1720637627', target: '_blank'}
+      and
+      #{link_to 'studies', 'http://blogs.scientificamerican.com/unofficial-prognosis/study-shows-gender-bias-in-science-is-real-heres-why-it-matters', target: '_blank'}.
+      Over time, it could lead to a pattern of female appropriation followed by "male flight", which seems consistent with the data:
+
+    #gender-carousel.carousel.slide
+      %ol.carousel-indicators
+        %li.active{data: { target: '#gender-carousel', :'slide_to' => '0' }}
+        %li{data: { target: '#gender-carousel', slide_to: '1' }}
+        %li{data: { target: '#gender-carousel', slide_to: '2' }}
+        %li{data: { target: '#gender-carousel', slide_to: '3' }}
+        %li{data: { target: '#gender-carousel', slide_to: '4' }}
+        %li{data: { target: '#gender-carousel', slide_to: '5' }}
+        %li{data: { target: '#gender-carousel', slide_to: '6' }}
+        %li{data: { target: '#gender-carousel', slide_to: '7' }}
+        %li{data: { target: '#gender-carousel', slide_to: '8' }}
+
+      .carousel-inner{role: 'listbox'}
+        .item.active
+          .gender-chart.mtf{ data: { width: 350, name: 'Sydney' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Sandy' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Aubrey' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Leslie' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Kelly' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Ashley' } }
+        .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Dana' } }
+        .item
+          .gender-chart.ftm{ data: { width: 350, name: 'Frankie' } }
+        .item
+          .gender-chart.ftm{ data: { width: 350, name: 'Donnie' } }
+
+      %a.left.carousel-control{href: '#gender-carousel', role: 'button', data: { slide: 'prev' }}
+        %span.glyphicon.glyphicon-chevron-left{:'aria-hidden' => true}
+      %a.right.carousel-control{href: '#gender-carousel', role: 'button', data: { slide: 'next' }}
+        %span.glyphicon.glyphicon-chevron-right{:'aria-hidden' => true}
+
+  .col-lg-6
+    .gender-chart{ data: { name: 'Shirley', width: 525, line: 1934, image: '/images/brighteyes.jpg' } }
+
 %h3.page-header Acknowledgements
 
 %p This was made by #{link_to 'Andrew Ross', 'https://github.com/asross', target: '_blank'}, and the charts use the excellent library #{link_to 'd3.js', 'http://d3js.org', target: '_blank'}. The sliders use #{link_to 'noUiSlider', 'http://refreshless.com/nouislider', target: '_blank'} and the name select uses #{link_to 'chosen', 'https://harvesthq.github.io/chosen'}. You can check out the full source code for the visualization #{link_to 'here', 'https://github.com/asross/babynames', target: '_blank'}, and some details about how I'm calculating name similarity #{link_to 'here', 'https://github.com/asross/babynames/blob/master/parse.rb', target: '_blank'}. The main chart was inspired in part by of #{link_to 'this cool visualization', 'http://fathom.info/fortune500', target: '_blank'} of Fortune 500 companies.

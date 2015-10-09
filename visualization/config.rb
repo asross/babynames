@@ -62,6 +62,10 @@ sprockets.import_asset 'chosen/chosen-sprite@2x.png' do |p|
   "stylesheets/chosen-sprite@2x.png"
 end
 
+sprockets.import_asset 'bootstrap/fonts/glyphicons-halflings-regular.woff' do |p|
+  "#{fonts_dir}/glyphicons-halflings-regular.woff"
+end
+
 helpers do
   def data_by_name
     File.read("#{root}/../data_by_name.json")

@@ -4,6 +4,29 @@
  *= require nouislider
  *= require chart-svg
  *= require chart-controls
+ *= require stories
  */
 
 @charset "utf-8";
+
+.carousel-indicators .active {
+  background-color: #000;
+}
+
+.carousel-indicators li {
+  border: 1px solid #000;
+  opacity: 0.5;
+}
+
+.carousel-control {
+  background: rgba(0, 0, 0, 0.0) !important;
+}
+
+.gender-chart {
+  position: relative;
+}
+
+.carousel .gender-chart {
+  padding-left: 6em;
+  padding-bottom: 3em;
+}
