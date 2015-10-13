@@ -143,7 +143,7 @@ class NameChart extends Chart
   legendPlacement: (d, i) ->
     vSpace = 20
     vPad = 40
-    hPad = @width / 4
+    hPad = @width / 5
     xPos = (hPad * i) % @width
     xRem = (hPad * i) / @width
     xRem = Math.floor(xRem)
