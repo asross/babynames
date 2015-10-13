@@ -7,4 +7,4 @@
 //= require chart
 //= require main_chart
 //= require churn_chart
-//= require stories
+//= require gender_drift
