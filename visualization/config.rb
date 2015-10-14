@@ -66,6 +66,10 @@ sprockets.import_asset 'bootstrap/fonts/glyphicons-halflings-regular.woff' do |p
   "#{fonts_dir}/glyphicons-halflings-regular.woff"
 end
 
+sprockets.import_asset 'bootstrap/fonts/glyphicons-halflings-regular.woff2' do |p|
+  "#{fonts_dir}/glyphicons-halflings-regular.woff2"
+end
+
 helpers do
   def data_by_name
     File.read("#{root}/../data_by_name.json")
@@ -73,10 +77,6 @@ helpers do
 
   def data_by_year
     File.read("#{root}/../data_by_year.json")
-  end
-
-  def metrics_by_name
-    File.read("#{root}/../metrics_by_name.json")
   end
 end
 

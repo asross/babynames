@@ -30,7 +30,7 @@ window.currentGender = -> JSON.parse(nameSelect.value).gender
 window.currentName = -> JSON.parse(nameSelect.value).name
 
 nameSelect.onchange = ->
-  data = dataByName[currentGender()][currentName()].d
+  data = dataByName[currentGender()][currentName()].data
   yearInput.value = yearOf data[0]
   rankInput.value = rankOf data[0]
   redraw()
@@ -64,7 +64,7 @@ $femaleGenderButton.click ->
   redraw()
 
 stepInput.oninput = ->
-  data = dataByName[currentGender()][currentName()].d
+  data = dataByName[currentGender()][currentName()].data
   datum = data[parseInt(this.value)]
   yearInput.value = yearOf datum
   rankInput.value = rankOf datum
@@ -112,7 +112,7 @@ window.redraw = ->
 
   name = dataByYear[gender][year][rank - 1]
   nameInfo = dataByName[gender][name]
-  data = nameInfo.d
+  data = nameInfo.data
 
   # compute point along path
   step = 0
@@ -158,7 +158,7 @@ window.redraw = ->
     $maleGenderButton.removeClass('active')
 
   closestNames = nameInfo.c.slice(0,simsInput.value).map (n) ->
-    { name: n[1], gender: n[0], values: dataByName[n[0]][n[1]].d }
+    { name: n[1], gender: n[0], values: dataByName[n[0]][n[1]].data }
 
   simChart.setScale(currentScale)
   simChart.drawSeries(closestNames)

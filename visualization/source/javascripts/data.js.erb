@@ -26,9 +26,11 @@ Object.keys(dataByYear).forEach(function(gender) {
       name = dataByYear[gender][year][i][0];
       pctg = dataByYear[gender][year][i][1];
       rank = i + 1;
-      if (!dataByName[gender][name].d)
-        dataByName[gender][name].d = [];
-      dataByName[gender][name].d.push([parseInt(year), rank, pctg]);
+      if (!dataByName[gender][name])
+        dataByName[gender][name] = { c: [] };
+      if (!dataByName[gender][name].data)
+        dataByName[gender][name].data = [];
+      dataByName[gender][name].data.push([parseInt(year), rank, pctg]);
       dataByYear[gender][year][i] = name;
     }
   });
@@ -53,7 +55,7 @@ Object.keys(dataByName).forEach(function(gender) {
     var fiveYearData = {};
     var currentYear = 1880;
 
-    dataByName[gender][name].d.forEach(function(d) {
+    dataByName[gender][name].data.forEach(function(d) {
       var year = d[0];
       var rank = d[1];
       var pctg = d[2];

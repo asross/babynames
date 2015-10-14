@@ -14,8 +14,8 @@ $ ->
     name = $(@).data('name')
 
     series = [
-      { name: name, gender: 'm', values: dataByName['m'][name].d },
-      { name: name, gender: 'f', values: dataByName['f'][name].d }
+      { name: name, gender: 'm', values: dataByName['m'][name].data },
+      { name: name, gender: 'f', values: dataByName['f'][name].data }
     ]
 
     if $(@).hasClass('ftm')

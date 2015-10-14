@@ -177,6 +177,8 @@ metrics_by_name.each do |gender, mbn|
     metrics.delete :area_under_curve
     metrics[:c] = metrics.delete(:closest_names).map { |cn| [cn[1], cn[2]] }
   end
+
+  mbn.select!{|name, metrics| metrics.fetch(:c, []).length > 0 }
 end
 
 # write it out to a JSON file
