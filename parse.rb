@@ -174,7 +174,7 @@ metrics_by_name.each do |gender, mbn|
     metrics.delete(:ten_year_averages)
     metrics.delete :five_year_averages
     metrics.delete :data
-    metrics[:a] = metrics.delete(:area_under_curve)
+    metrics.delete :area_under_curve
     metrics[:c] = metrics.delete(:closest_names).map { |cn| [cn[1], cn[2]] }
   end
 end

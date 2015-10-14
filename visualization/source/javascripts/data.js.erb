@@ -1,6 +1,25 @@
+// Helper methods
+window.roundTo = function(closestN, num) {
+  return closestN * Math.round(num / closestN);
+};
+
+Array.prototype.sum = function() {
+  return this.reduce(function(a, b) {
+    return a + b;
+  });
+};
+
+Array.prototype.mean = function() {
+  return this.sum() / this.length;
+};
+
+window.lustra = incrementsBy(5, 1880, 2015);
+
+// Read in JSON
 window.dataByName = <%= data_by_name %>;
 window.dataByYear = <%= data_by_year %>;
 
+// Construct data by name from data by year
 Object.keys(dataByYear).forEach(function(gender) {
   Object.keys(dataByYear[gender]).forEach(function(year) {
     for (i = 0; i < dataByYear[gender][year].length; i++) {
@@ -12,5 +31,48 @@ Object.keys(dataByYear).forEach(function(gender) {
       dataByName[gender][name].d.push([parseInt(year), rank, pctg]);
       dataByYear[gender][year][i] = name;
     }
+  });
+});
+
+function incrementsBy(n, from, to) {
+  var result = [];
+  for (i = from; i <= to; i += n) result.push(i);
+  return result;
+}
+
+function _pushFYD(fiveYearData, lustrum, rank, pctg) {
+  if (!fiveYearData[lustrum])
+    fiveYearData[lustrum] = { ranks: [], pctgs: [] };
+  fiveYearData[lustrum].ranks.push(rank);
+  fiveYearData[lustrum].pctgs.push(pctg);
+}
+
+Object.keys(dataByName).forEach(function(gender) {
+  Object.keys(dataByName[gender]).forEach(function(name) {
+    //var auc = 0;
+    var fiveYearData = {};
+    var currentYear = 1880;
+
+    dataByName[gender][name].d.forEach(function(d) {
+      var year = d[0];
+      var rank = d[1];
+      var pctg = d[2];
+      //auc += 1000 - rank;
+      for (yr = currentYear; yr < year; yr++)
+        _pushFYD(fiveYearData, roundTo(5, yr), 1001, 0);
+      _pushFYD(fiveYearData, roundTo(5, year), rank, pctg);
+      currentYear = year + 1;
+    });
+
+    //dataByName[gender][name].auc = auc;
+    dataByName[gender][name].fiveYearData = [];
+
+    lustra.forEach(function(year) {
+      dataByName[gender][name].fiveYearData.push([
+        year,
+        ((fiveYearData[year] || {}).ranks || [1001]).mean(),
+        ((fiveYearData[year] || {}).pctgs || [0]).mean()
+      ]);
+    });
   });
 });

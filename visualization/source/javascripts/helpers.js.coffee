@@ -7,9 +7,6 @@ window.yearOf = (d) -> d.year || d[0]
 window.rankOf = (d) -> d.rank || d[1]
 window.pctgOf = (d) -> d.percentage || d[2]
 
-window.roundTo = (closestN, num) ->
-  closestN * Math.round(num / closestN)
-
 window.roundDownTo = (closestN, num) ->
   closestN * Math.floor(num / closestN)
 
@@ -24,9 +21,3 @@ Array.prototype.revslice = (min, max) ->
     this.slice(-max)
   else
     this.slice(-max, -min)
-
-Array.prototype.sum = ->
-  this.reduce (a, b) -> a + b
-
-Array.prototype.mean = ->
-  this.sum() / this.length
