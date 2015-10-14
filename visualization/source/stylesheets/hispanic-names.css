@@ -1,0 +1,40 @@
+.multiselect {
+  width: 150px;
+  display: inline-block;
+  margin-left: 2em;
+}
+
+.multiselect .btn-group {
+  width: calc(100% + 1px);
+}
+
+.multiselect button.btn {
+  width: 50%;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: none;
+}
+
+.multiselect select.form-control {
+  height: 360px;
+  width: 100%;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.multiselect-label {
+  text-align: center;
+}
+
+.multiselect-label label {
+  text-align: center;
+  font-weight: normal;
+}
+
+.multiselect-info {
+  border: 1px solid #ccc;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}

@@ -29,7 +29,7 @@ class Chart
 
     @defaultChartHeight ||= @defaultChartWidth / 1.618
 
-    @xTickValues ||= (d for d in [@xDomain[0]..@xDomain[1]] by 10)
+    @xTickValues ||= (d for d in [roundUpTo(10,@xDomain[0])..roundDownTo(10,@xDomain[1])] by 10)
     @yTickValues ||= [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 999]
     @height ||= @defaultChartHeight
     @width ||= (@xTickValues.length / 14) * @defaultChartWidth

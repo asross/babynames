@@ -5,6 +5,7 @@
  *= require chart-svg
  *= require chart-controls
  *= require gender-drift
+ *= require hispanic-names
  */
 
 @charset "utf-8";

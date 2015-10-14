@@ -155,6 +155,78 @@
   .col-lg-6
     .gender-chart{ data: { name: 'Shirley', width: 525, line: 1934, image: '/images/brighteyes.jpg' } }
 
+%h2.page-header Hispanic Names
+
+.row
+  .col-lg-6
+    %p
+      Many Hispanic names have been growing in popularity at similar rates.
+      For example, see this chart showing the most similar names to Julio (auto-generated, not hand-selected).
+      Not every name is Hispanic, but most are.
+
+    %p
+      This might have less to do with the names themselves and more with the fact that the U.S. Hispanic population
+      #{link_to 'has grown exponentially', 'https://en.wikipedia.org/wiki/Historical_racial_and_ethnic_demographics_of_the_United_States#Historical_data_for_all_races_and_for_Hispanic_origin_.281610.E2.80.932010.29', target: '_blank'}
+      (from 1.5% in 1940 to 17.4% in 2014).
+
+    %p
+      What if we compared that population growth to the name <em>popularity</em> growth?
+      Theoretically, if Hispanic parents give their children (exclusively) Hispanic names, they should rise at about the same rate.
+
+    %p
+      To do this, we'll make a list of Hispanic names and sum up their popularities over the same time period. To make that list, I'm looking at
+      #{link_to 'these', 'http://www.babycenter.com/0_100-most-popular-hispanic-baby-names-of-2011_10363639.bc', target: '_blank'}
+      #{link_to 'lists', 'http://www.babycenter.com/0_most-common-baby-names-in-mexico_10341179.bc', target: '_blank'}
+      of popular Hispanic baby names and excluding the ones that are also popular for non-Hispanic Americans. I'm also only considering boy names, because
+      there appears to be much more overlap for girl names (which is interesting in itself). Even though we're splitting up our data into
+      %abbr#exclusively-hispanic-list usually-Hispanic
+      and only
+      %abbr#shared-hispanic-list sometimes-Hispanic
+      names (hover for the lists), that shouldn't matter for analysis
+      %em as long as parents choose them at the same rate.
+      %br
+      %br
+
+    .clearfix
+      #hispanic-popularity-vs-population.pull-left
+
+      .multiselect.clearfix
+        .multiselect-info
+          %span
+        .multiselect-buttons
+          .btn-group
+            %button.btn.btn-default.multiselect-select-all all
+            %button.btn.btn-default.multiselect-select-none none
+        .multiselect-select
+          %select#exclusively-hispanic-boy-name-select.form-control{multiple: true}
+
+  .col-lg-6
+    #julio-chart
+
+    %p
+      For the most part, the lines rise at the same rate. This means that the number of baby boys given
+      the chosen names is proportional to the number of Hispanic Americans, which makes sense.
+      However, over the past 10-15 years the lines have split, and it appears that Hispanic names are less
+      popular than you'd expect based on the size of the Hispanic population.
+
+    %p
+      A drop in birthrate could explain this, but the Hispanic population has
+      continued to grow at near the same rate, so it seems unlikely.
+      The simplest explanation is that Hispanic parents aren't choosing names in the set.
+      This could mean there are other specifically-Hispanic names that
+      we aren't accounting for, or it could mean Hispanic parents are starting to favor either Anglicized names
+      or names that are still traditionally Hispanic but not exclusively so. According to
+      #{link_to 'at least one account', 'http://www.nytimes.com/2015/10/04/opinion/sunday/for-muslim-americans-baby-aidan-or-baby-muhammad.html', target: '_blank'},
+      that has definitely happened with Middle-Eastern names. Either way, it's consistent with 
+      #{link_to 'recent', 'http://www.nytimes.com/2015/09/22/us/newest-immigrants-assimilating-as-well-as-past-ones-report-says.html', target: '_blank'}
+      #{link_to 'reports', 'http://www.washingtonpost.com/news/wonkblog/wp/2013/01/28/hispanic-immigrants-are-assimilating-just-as-quickly-as-earlier-groups', target: '_blank'}
+      showing fast Hispanic-American assimilation.
+
+    %p
+      It's also interesting to look at which Hispanic-American names are growing faster than the average.
+      Santiago, Maximiliano, Mateo, Emiliano, and Cruz seem to be "beating the market" and rising absolutely
+      in popularity despite a general decline.
+
 %h3.page-header Acknowledgements
 
 %p This was made by #{link_to 'Andrew Ross', 'https://github.com/asross', target: '_blank'}, and the charts use the excellent library #{link_to 'd3.js', 'http://d3js.org', target: '_blank'}. The sliders use #{link_to 'noUiSlider', 'http://refreshless.com/nouislider', target: '_blank'} and the name select uses #{link_to 'chosen', 'https://harvesthq.github.io/chosen'}. You can check out the full source code for the visualization #{link_to 'here', 'https://github.com/asross/babynames', target: '_blank'}, and some details about how I'm calculating name similarity #{link_to 'here', 'https://github.com/asross/babynames/blob/master/parse.rb', target: '_blank'}. The main chart was inspired in part by of #{link_to 'this cool visualization', 'http://fathom.info/fortune500', target: '_blank'} of Fortune 500 companies.
