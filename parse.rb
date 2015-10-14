@@ -130,7 +130,7 @@ end
 all_metrics = []
 all_metrics += metrics_by_name[:m].map{|name, metrics| [:m, metrics] }
 all_metrics += metrics_by_name[:f].map{|name, metrics| [:f, metrics] }
-all_metrics.select!{|g, metrics| metrics[:area_under_curve] > 20000 }
+all_metrics.select!{|g, metrics| metrics[:area_under_curve] > 10000 }
 
 # compute both the distance between their changes
 # and the distance between their actual popularities, smoothed over decades.
