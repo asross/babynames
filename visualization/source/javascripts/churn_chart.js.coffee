@@ -6,6 +6,7 @@ window.namesByChurn = (minLustrum, maxLustrum, genders) ->
 
   for gender in genders
     for name, metrics of dataByName[gender]
+      continue if name == 'Unknown'
       averages = metrics.fiveYearData
       pre = rankOf averages[minLustrum]
       post = rankOf averages[maxLustrum]
@@ -47,7 +48,7 @@ noUiSlider.create(churnYearSlider, {
   animate: false,
   behaviour: 'tap-drag',
   range: { min: 1880, max: 2015 },
-  pips: { mode: 'count', values: 14 }
+  pips: { mode: 'values', values: (y for y in [1880..2010] by 10) }
 })
   
 churnYearSlider.noUiSlider.on 'slide', (values, handle, unencoded) ->
