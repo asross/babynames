@@ -1,0 +1,40 @@
+.story-chart {
+  position: relative;
+  width: 515px;
+  margin: 0 auto;
+  margin-bottom: 3em;
+}
+
+.chart-caption {
+  width: 66px;
+  position: absolute;
+  transform: translateX(-50%);
+  border: 1px dotted #333;
+}
+
+.chart-caption img {
+  width: 100%;
+}
+
+.chart-caption span {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: white;
+  background: #333;
+  opacity: 0.8;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
+.chart-caption-potus {
+  background-image: url(/images/potus.png);
+  background-size: contain;
+  padding: 1em;
+  background-repeat: no-repeat;
+}
+
+.chart-caption-potus img {
+  border-radius: 50%;
+}

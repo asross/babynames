@@ -6,6 +6,7 @@
  *= require chart-controls
  *= require gender-drift
  *= require hispanic-names
+ *= require tiny-stories
  */
 
 @charset "utf-8";
