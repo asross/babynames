@@ -1,18 +1,18 @@
 window.exclusivelyHispanicBoyNames = [
-  "Agustin", "Alberto", "Alejandro", "Alfredo", "Alonso",
-  "Alvaro", "Andres", "Angel", "Armando", "Arturo",
+  "Agustin", "Alberto", "Alejandro", "Alfredo", "Alonso", "Alphonso",
+  "Alvaro", "Andres", "Angel", "Armando", "Arturo", "Benito",
   "Camilo", "Carlos", "Carmelo", "Cristobal", "Cruz",
-  "Diego", "Eduardo", "Emiliano", "Emilio",
+  "Diego", "Domingo", "Eduardo", "Efrain", "Emiliano", "Emilio",
   "Enrique", "Ernesto", "Esteban", "Ezequiel", "Felipe",
-  "Fernando", "Francisco", "Gael", "Gerardo", "Guillermo",
-  "Gustavo", "Hector", "Ignacio", "Ismael", "Jaime", "Javier",
+  "Fernando", "Francisco", "Gael", "Gerardo", "Gilberto", "Guadalupe", "Guillermo",
+  "Gustavo", "Hector", "Heriberto", "Humberto", "Ignacio", "Ismael", "Jaime", "Javier",
   "Jesus", "Joaquin", "Joel", "Jorge", "Josue", "Juan",
   "Lorenzo", "Luciano", "Luis", "Manuel", "Marco", "Mateo",
   "Matias", "Mauricio", "Maximiliano", "Maximo", "Miguel", "Moises",
-  "Nathanael", "Pablo", "Pedro", "Rafael", "Raul", "Ricardo",
-  "Roberto", "Rodolfo", "Rodrigo", "Rolando", "Salvador", "Santiago", "Santino", "Sergio",
+  "Nathanael", "Noel", "Osvaldo", "Pablo", "Pedro", "Rafael", "Ramiro", "Raul", "Reynaldo", "Ricardo", "Rigoberto",
+  "Roberto", "Rodolfo", "Rodrigo", "Rogelio", "Rolando", "Salvador", "Santiago", "Santino", "Sergio",
   "Tomas", "Valentin", "Valentino", "Vicente"
-]
+].sort()
 
 window.sharedHispanicBoyNames = [
   "Aaron", "Adrian", "Alan", "Antonio",
@@ -22,10 +22,9 @@ window.sharedHispanicBoyNames = [
   "Ivan", "Joshua", "Julian", "Kevin", "Leonardo", "Lucas",
   "Mario", "Martin", "Nicolas", "Samuel", "Saul", "Sebastian",
   "Simon", "Victor"
-]
+].sort()
 
-$('#shared-hispanic-list').attr('title', sharedHispanicBoyNames.join(", "))
-$('#exclusively-hispanic-list').attr('title', exclusivelyHispanicBoyNames.join(", "))
+$('#shared-hispanic-list').attr('title', "Specifically:\n#{sharedHispanicBoyNames.toSentence()}")
 
 window.$ehbnSelect = $('#exclusively-hispanic-boy-name-select')
 for name in exclusivelyHispanicBoyNames
@@ -65,7 +64,7 @@ hispanicDemographicData.push(year: 2014, percentage: 17.4)
 
 compChart = new NameChart(document.getElementById('hispanic-popularity-vs-population'), {
   sanitizeLine: (l) -> l
-  defined: (d) -> pctgOf(d)
+  defined: (d) -> pctgOf(d) > 0.01
   yUnits: 'percentage'
   xDomain: [1930, 2020]
   percentageDomain: [0.01, 100]
