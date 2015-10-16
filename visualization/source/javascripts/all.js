@@ -10,3 +10,4 @@
 //= require gender_drift
 //= require hispanic_names
 //= require tiny_stories
+//= require download
