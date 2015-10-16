@@ -71,12 +71,16 @@ sprockets.import_asset 'bootstrap/fonts/glyphicons-halflings-regular.woff2' do |
 end
 
 helpers do
-  def data_by_name
-    File.read("#{root}/../data_by_name.json")
-  end
-
   def data_by_year
     File.read("#{root}/../data_by_year.json")
+  end
+
+  def closest_names
+    File.read("#{root}/../closest_names.json")
+  end
+
+  def name_dictionary
+    File.read("#{root}/../name_dictionary.json")
   end
 end
 

@@ -157,12 +157,13 @@ window.redraw = ->
     $femaleGenderButton.addClass('active')
     $maleGenderButton.removeClass('active')
 
-  closestNames = nameInfo.c.slice(0,simsInput.value).map (n) ->
+  closestNames = nameInfo.closestNames?.slice(0,simsInput.value).map (n) ->
     { name: n[1], gender: n[0], values: dataByName[n[0]][n[1]].data }
+  closestNames ||= []
 
   simChart.setScale(currentScale)
   simChart.drawSeries(closestNames)
-  if nameInfo.c.length > 0
+  if closestNames.length
     simChart.setTitle "#{simsInput.value} names most similar to #{genderSymbol} #{name}"
   else
     simChart.setTitle "Not enough data for #{genderSymbol} #{name} to chart similarities"

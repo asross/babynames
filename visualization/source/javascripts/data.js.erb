@@ -16,24 +16,36 @@ Array.prototype.mean = function() {
 window.lustra = incrementsBy(5, 1880, 2015);
 
 // Read in JSON
-window.dataByName = <%= data_by_name %>;
+
+window.closestNames = <%= closest_names %>;
+window.nameDictionary = <%= name_dictionary %>;
+
 window.dataByYear = <%= data_by_year %>;
+window.dataByName = { m: {}, f: {} };
 
 // Construct data by name from data by year
 Object.keys(dataByYear).forEach(function(gender) {
   Object.keys(dataByYear[gender]).forEach(function(year) {
     for (i = 0; i < dataByYear[gender][year].length; i++) {
-      name = dataByYear[gender][year][i][0];
-      pctg = dataByYear[gender][year][i][1];
+      point = dataByYear[gender][year][i];
+      name = nameDictionary[gender][point[0]];
+      pctg = point[1];
       rank = i + 1;
       if (!dataByName[gender][name])
-        dataByName[gender][name] = { c: [] };
+        dataByName[gender][name] = {};
       if (!dataByName[gender][name].data)
         dataByName[gender][name].data = [];
       dataByName[gender][name].data.push([parseInt(year), rank, pctg]);
       dataByYear[gender][year][i] = name;
     }
   });
+
+  for (j = 0; j < closestNames[gender].length; j++) {
+    name = nameDictionary[gender][j];
+    dataByName[gender][name].closestNames = closestNames[gender][j].map(function(d) {
+      return [d[0], nameDictionary[d[0]][d[1]]];
+    });
+  }
 });
 
 function incrementsBy(n, from, to) {

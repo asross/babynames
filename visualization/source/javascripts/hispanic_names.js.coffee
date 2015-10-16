@@ -37,7 +37,7 @@ for name in exclusivelyHispanicBoyNames
 julioChart = new NameChart(document.getElementById('julio-chart'))
 julioData = [{ name: 'Julio', gender: 'm', values: dataByName.m.Julio.data }]
 count = 24
-dataByName.m.Julio.c.slice(0, count).forEach (d) ->
+dataByName.m.Julio.closestNames.slice(0, count).forEach (d) ->
   julioData.push(name: d[1], gender: d[0], values: dataByName[d[0]][d[1]].data)
 julioChart.drawSeries(julioData)
 julioChart.setTitle("#{count} names most similar to #{genderSymbols.m} Julio")

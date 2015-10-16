@@ -125,6 +125,24 @@ metrics_by_name.each do |gender, metrics|
   end
 end
 
+# let's make the payload even smaller by replacing every instance of a name with its index
+name_list = {}
+names_to_indexes = {}
+[:m, :f].each do |gender|
+  name_list[gender] = metrics_by_name[gender].values.sort_by { |m| -m[:area_under_curve] }.map { |m| m[:name] }
+  names_to_indexes[gender] = {}
+  name_list[gender].each_with_index do |name, i|
+    names_to_indexes[gender][name] = i
+  end
+end
+
+trimmed_data_by_year = { m: {}, f: {} }
+data_by_year.each do |gender, dby|
+  dby.each do |year, data|
+    trimmed_data_by_year[gender][year] = data.map { |d| [names_to_indexes[gender][d[0]], d[1]] }
+  end
+end
+
 # now compute closest names -- but only for names that are reasonably popular,
 # because you have to compare every name to every other, which grows like n^2
 all_metrics = []
@@ -154,6 +172,10 @@ end
 avg_cdist = cdists.mean
 avg_adist = adists.mean
 
+# we're going to store this in a compact format
+# for sending to the browser
+trimmed_closest_names = { m: {}, f: {} }
+
 all_metrics.each do |gender1, metric1|
   closest = SortedSet.new
   all_metrics.each do |gender2, metric2|
@@ -163,29 +185,27 @@ all_metrics.each do |gender1, metric1|
     distance = 0.3*cdist + 0.7*adist
     closest << [distance, gender2, metric2[:name]]
   end
-  metric1[:closest_names] = closest.to_a[0..50]
-end
 
-# delete what we don't need so the payload is smaller
-metrics_by_name.each do |gender, mbn|
-  mbn.each do |name, metrics|
-    metrics.delete(:ten_year_changes)
-    metrics.delete(:five_year_changes)
-    metrics.delete(:ten_year_averages)
-    metrics.delete :five_year_averages
-    metrics.delete :data
-    metrics.delete :area_under_curve
-    metrics[:c] = metrics.delete(:closest_names).map { |cn| [cn[1], cn[2]] }
+  index1 = names_to_indexes[gender1][metric1[:name]]
+  trimmed_closest_names[gender1][index1] = closest.to_a[0..49].map do |distance, gender2, name2|
+    index2 = names_to_indexes[gender2][name2]
+    [gender2, index2]
   end
-
-  mbn.select!{|name, metrics| metrics.fetch(:c, []).length > 0 }
 end
 
-# write it out to a JSON file
+# convert to an array of arrays
+trimmed_closest_names[:m] = trimmed_closest_names[:m].sort_by { |index, names| index }.map(&:last)
+trimmed_closest_names[:f] = trimmed_closest_names[:f].sort_by { |index, names| index }.map(&:last)
+
+# write what we need out to a JSON file
+File.open("./name_dictionary.json", "wb") do |f|
+  f.write JSON.dump(name_list)
+end
+
 File.open("./data_by_year.json", "wb") do |f|
-  f.write JSON.dump(data_by_year)
+  f.write JSON.dump(trimmed_data_by_year)
 end
 
-File.open("./data_by_name.json", "wb") do |f|
-  f.write JSON.dump(metrics_by_name)
+File.open("./closest_names.json", "wb") do |f|
+  f.write JSON.dump(trimmed_closest_names)
 end
