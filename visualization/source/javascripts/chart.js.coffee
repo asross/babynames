@@ -63,7 +63,11 @@ class Chart
     @circle ||= @outerG.append('circle')
       .attr('class', 'marker')
       .attr('r', 8)
+    @arrows ||= @outerG.append('text')
+      .text('↔')
+      .style('opacity', 0.5)
     @circle.attr('transform', "translate(#{@x(point)},#{@y(point)})")
+    @arrows.attr('transform', "translate(#{@x(point)-7.5},#{@y(point)-7.5})")
 
   buildYAxis: ->
     @yScale = d3.scale.linear().range([@height, 0]).domain(@yDomain)
