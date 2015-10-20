@@ -176,8 +176,6 @@ circleDrag.on 'dragstart', ->
   mainChart.circle.classed('dragging', true)
 
 circleDrag.on 'drag', ->
-  mainChart.arrows.style('display', 'none')
-  mainChart.arrows2.style('display', 'none')
   yearInput.value = clamp(
     Math.round(mainChart.xScale.invert(d3.event.x)),
     mainChart.xDomain[0],
