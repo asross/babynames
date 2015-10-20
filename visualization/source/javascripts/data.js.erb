@@ -36,7 +36,7 @@ Object.keys(dataByYear).forEach(function(gender) {
       if (!dataByName[gender][name].data)
         dataByName[gender][name].data = [];
       dataByName[gender][name].data.push([parseInt(year), rank, pctg]);
-      dataByYear[gender][year][i] = name;
+      dataByYear[gender][year][i] = [name, pctg];
     }
   });
 
@@ -47,6 +47,9 @@ Object.keys(dataByYear).forEach(function(gender) {
     });
   }
 });
+
+delete window.closestNames;
+delete window.nameDictionary;
 
 function incrementsBy(n, from, to) {
   var result = [];

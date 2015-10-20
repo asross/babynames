@@ -53,13 +53,13 @@ $pctgScale.click ->
 
 $maleGenderButton = $('#gender-male')
 $maleGenderButton.click ->
-  name = dataByYear['m'][yearInput.value][rankInput.value - 1]
+  name = dataByYear['m'][yearInput.value][rankInput.value - 1][0]
   nameSelect.value = JSON.stringify(gender: 'm', name: name)
   redraw()
 
 $femaleGenderButton = $('#gender-female')
 $femaleGenderButton.click ->
-  name = dataByYear['f'][yearInput.value][rankInput.value - 1]
+  name = dataByYear['f'][yearInput.value][rankInput.value - 1][0]
   nameSelect.value = JSON.stringify(gender: 'f', name: name)
   redraw()
 
@@ -110,7 +110,7 @@ window.redraw = ->
   genderSymbol = genderSymbols[gender]
   genderStub = genderStubs[gender]
 
-  name = dataByYear[gender][year][rank - 1]
+  name = dataByYear[gender][year][rank - 1][0]
   nameInfo = dataByName[gender][name]
   data = nameInfo.data
 
