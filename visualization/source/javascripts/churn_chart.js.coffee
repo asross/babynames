@@ -25,6 +25,7 @@ window.$churnMale = $('#churn-male')
 window.$churnFemale = $('#churn-female')
 
 window.risingNamesChart = new NameChart document.getElementById('rising-names'), {
+  showYAxisLabel: true
   sanitizeLine: (l) -> l
   xDomain: [1880, 2015]
 }

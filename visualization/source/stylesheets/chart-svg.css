@@ -13,6 +13,10 @@ svg {
   font-size: small;
 }
 
+text.label {
+  font-weight: normal;
+}
+
 .line {
   fill: none;
   stroke: steelblue;

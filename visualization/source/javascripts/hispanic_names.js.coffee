@@ -69,6 +69,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
   xDomain: [1930, 2020]
   percentageDomain: [0.01, 100]
   height: 395
+  margin: { left: 30 }
   legendPlacement: (d, i) ->
     { x: 0.5*@width - 100*i, y: @height + 40 }
 })

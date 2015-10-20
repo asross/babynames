@@ -1,7 +1,7 @@
 class Chart
   defaultChartWidth: 475
   defaultMarginTop: 30
-  defaultMarginLeft: 30
+  defaultMarginLeft: 40
   defaultMarginRight: 0
   defaultMarginBottom: 30
   xUnits: 'year'
@@ -114,13 +114,25 @@ class NameChart extends Chart
     if @yUnits == 'percentage'
       @yScale = @percentageScale
       @yAxis = d3.svg.axis().scale(@yScale).orient('left').tickFormat(@percentageTickFormat)
+      label = '% of Population'
     else
       @yScale = @rankScale
       @yAxis = d3.svg.axis().scale(@yScale).orient('left').tickValues(@yTickValues)
+      label = 'Popularity Rank'
     @yAxisLine.call(@yAxis)
     tickCount = if @yUnits == 'percentage' then 10 else @yTickValues.length
     @yAxis.ticks(tickCount).tickFormat('').tickSize(@width, 0).orient('right')
     @yAxisGrid.call(@yAxis)
+    @svg.selectAll('.y.label').remove()
+    if @showYAxisLabel
+      @svg.append('text')
+        .attr('class', 'y label')
+        .attr("text-anchor", "middle")
+        .attr("y", -50)
+        .attr("x", -@height/2)
+        .attr("dy", ".75em")
+        .attr("transform", "rotate(-90)")
+        .text(label)
 
   rankDomain: [1000, 1]
   percentageDomain: [0.001, 100]

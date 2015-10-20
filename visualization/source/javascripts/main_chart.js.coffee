@@ -89,7 +89,7 @@ noUiSlider.create(rankSlider, {
   range: { min: 1, max: 999 }
 })
 
-mainChart = new NameChart(document.getElementById('main-chart'))
+mainChart = new NameChart(document.getElementById('main-chart'), showYAxisLabel: true)
 
 simChart = new NameChart(document.getElementById('similar-names'), {
   legendClick: (d) ->
