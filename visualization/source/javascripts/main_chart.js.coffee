@@ -170,9 +170,14 @@ window.redraw = ->
 
 window.redraw()
 
+$circle = $(mainChart.circle[0])
+$circle.tooltip(title: 'Drag me!', placement: 'top', trigger: 'manual', container: '#main-chart')
+$circle.tooltip('show')
+
 circleDrag = d3.behavior.drag()
 
 circleDrag.on 'dragstart', ->
+  $circle.tooltip('hide')
   mainChart.circle.classed('dragging', true)
 
 circleDrag.on 'drag', ->
