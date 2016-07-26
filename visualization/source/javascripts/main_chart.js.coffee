@@ -76,7 +76,7 @@ noUiSlider.create(yearSlider, {
   connect: 'lower',
   animate: false,
   step: 1,
-  range: { min: 1880, max: 2014 }
+  range: { min: 1880, max: 2015 }
 })
 
 rankSlider = document.getElementById('rank-slider')

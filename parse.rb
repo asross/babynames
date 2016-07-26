@@ -52,12 +52,14 @@ end
 
 data_by_year = { m: {}, f: {} }
 data_by_name = { m: {}, f: {} }
-decades = 188.upto(201).to_a
-fiveyrs = 376.upto(402).to_a
+
+range = (1880..2015)
+decades = ((range.min/10)..(range.max/10)).to_a
+fiveyrs = ((range.min/5)..(range.max/5)).to_a
 
 # parse the HTML tables scraped from ssa.gov to get the data in a form we can use.
 # Store it both by name and by year for easy lookup.
-1880.upto(2014).each do |year|
+range.each do |year|
   html = File.read("./raw/#{year}.html")
   html.scan(/<tr align="right">(?:\s*<td>[\w,.%]+<\/td>\s*)+<\/tr>/).each do |row|
     rank, boy_name, boy_percent, girl_name, girl_percent = row.scan(/<td>([\w,.%]+)<\/td>/).flatten

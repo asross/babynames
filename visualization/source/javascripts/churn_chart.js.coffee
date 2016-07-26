@@ -51,7 +51,7 @@ noUiSlider.create(churnYearSlider, {
   range: { min: 1880, max: 2015 },
   pips: { mode: 'values', values: (y for y in [1880..2010] by 10) }
 })
-  
+
 churnYearSlider.noUiSlider.on 'slide', (values, handle, unencoded) ->
   y1 = Math.round parseFloat(unencoded[0])
   y2 = Math.round parseFloat(unencoded[1])

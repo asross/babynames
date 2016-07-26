@@ -1,4 +1,4 @@
-%h1.page-header Popular Baby Names in the US, 1880-2014
+%h1.page-header Popular Baby Names in the US, 1880-2015
 
 %p
   This is a visualization and analysis of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames', target: '_blank'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
@@ -20,7 +20,7 @@
 
         .well
           In
-          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2014' value='1880'/>,
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2015' value='1880'/>,
           <select id='name'></select>
           was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000' value='1'/>
           most popular
@@ -75,9 +75,9 @@
           %input.form-control#max-churn-names{type: 'number', step: 1, min: 0, max: 200, value: 20}
           names that changed the most
           from
-          %input.form-control#min-churn-years{type: 'number', step: 5, min: 1880, max: 2014, value: 1990}
+          %input.form-control#min-churn-years{type: 'number', step: 5, min: 1880, max: 2015, value: 1990}
           to
-          %input.form-control#max-churn-years{type: 'number', step: 5, min: 1880, max: 2014, value: 2000}
+          %input.form-control#max-churn-years{type: 'number', step: 5, min: 1880, max: 2015, value: 2000}
           for
           .btn-group{style: 'display: inline-block'}
             %button.btn.btn-default.btn-sm#churn-male= 'Boys'

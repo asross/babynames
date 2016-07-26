@@ -75,7 +75,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
 })
 compChart.setTitle("Hispanic #{genderSymbols.m} Name Popularity vs. Population")
 
-years = [1940..2014]
+years = [1940..2015]
 
 redrawHispanicComparison = ->
   totalsByYear = {}
