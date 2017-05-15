@@ -58,9 +58,11 @@ hispanicDemographicData.forEach (d) ->
   d.hispanicRatio = d.hispanicPopulation / d.totalPopulation
   d.percentage = 100 * d.hispanicRatio
 
-# Final data point comes from:
-#   http://www.pewresearch.org/fact-tank/2015/06/25/u-s-hispanic-population-growth-surge-cools/
+# http://www.pewresearch.org/fact-tank/2015/06/25/u-s-hispanic-population-growth-surge-cools/
 hispanicDemographicData.push(year: 2014, percentage: 17.4)
+
+# https://www.census.gov/newsroom/facts-for-features/2016/cb16-ff16.html
+hispanicDemographicData.push(year: 2015, percentage: 17.6)
 
 compChart = new NameChart(document.getElementById('hispanic-popularity-vs-population'), {
   sanitizeLine: (l) -> l
@@ -75,7 +77,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
 })
 compChart.setTitle("Hispanic #{genderSymbols.m} Name Popularity vs. Population")
 
-years = [1940..2015]
+years = [1940..2016]
 
 redrawHispanicComparison = ->
   totalsByYear = {}
