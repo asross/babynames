@@ -1,13 +1,13 @@
-%h1.page-header Popular Baby Names in the US, 1880-2016
+%h1.page-header Popular Baby Names in the US, 1880-2017
 
 %p
   This is a visualization and analysis of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames', target: '_blank'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
 
 %p
-  The dataset is interesting because in a very real sense it represents all of us. If you were born in the United States (and you have a relatively popular name), then you, your parents, and many people you care about are in these curves. Many of the things they experienced, everything from world wars to pop culture to racial and gender dynamics, are there too. The data is significant because the decisions behind it are significant; parents spend nine months deciding what to call their child.
+  The dataset is interesting because in a very real sense it represents all of us. If you were born in the United States (and you have a relatively popular name), then you, your parents, and many people you care about are in these curves. Many of the things they experienced, everything from world wars to pop culture to racial and gender dynamics, are there too. The data is significant because the decisions behind it are significant; parents often spend months deciding what to call their children.
 
 %p
-  It's a big decision, because names matter. They precede you everywhere you go, define how others think of you, and their secondary connotations are important, especially when you're #{link_to 'looking for a job', 'http://www.nytimes.com/roomfordebate/2015/10/19/job-discrimination-based-on-a-name', target: '_blank'}. So when parents choose a name, they generally do it seriously and with a mind to both their current cultural context and a larger historical one. WWII did much to reduce the popularity of Adolph, but for a while, Gump was just as effective at depopularizing Forrest. Parents consider many things both grave and banal when naming their children, and taken collectively they tell richly detailed stories about our ancestors and our culture. This visualization aims to bring them to the surface and make them accessible.
+  It's a big decision, because names matter. They precede you, frame how others perceive you, and their secondary connotations matter, especially when you're #{link_to 'looking for a job', 'http://www.nytimes.com/roomfordebate/2015/10/19/job-discrimination-based-on-a-name', target: '_blank'}. So when parents choose a name, they generally do it seriously, and with a mind to both the current cultural context and a larger historical one. World War II did much to reduce the popularity of Adolph, but for a while, Gump was just as effective at depopularizing Forrest. Parents consider many things both grave and banal when naming their children, and taken collectively they tell richly detailed stories about our ancestors and our culture. This visualization aims to bring some of these stories to the surface and make them accessible.
 
 %h2.page-header Interactive Tool
 
@@ -20,7 +20,7 @@
 
         .well
           In
-          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2015' value='1880'/>,
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2017' value='1880'/>,
           <select id='name'></select>
           was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000' value='1'/>
           most popular

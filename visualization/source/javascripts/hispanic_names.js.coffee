@@ -64,6 +64,9 @@ hispanicDemographicData.push(year: 2014, percentage: 17.4)
 # https://www.census.gov/newsroom/facts-for-features/2016/cb16-ff16.html
 hispanicDemographicData.push(year: 2015, percentage: 17.6)
 
+# https://www.census.gov/newsroom/facts-for-features/2017/hispanic-heritage.html
+hispanicDemographicData.push(year: 2016, percentage: 17.8)
+
 compChart = new NameChart(document.getElementById('hispanic-popularity-vs-population'), {
   sanitizeLine: (l) -> l
   defined: (d) -> pctgOf(d) > 0.01
@@ -77,7 +80,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
 })
 compChart.setTitle("Hispanic #{genderSymbols.m} Name Popularity vs. Population")
 
-years = [1940..2016]
+years = [1940..2017]
 
 redrawHispanicComparison = ->
   totalsByYear = {}
