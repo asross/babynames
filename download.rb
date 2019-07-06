@@ -1,4 +1,4 @@
-1880.upto(2017).each do |year|
+1880.upto(2018).each do |year|
   File.open("./raw/#{year}.html", "wb") do |f|
     f.write `curl --data "number=p&top=1000&year=#{year}" https://www.ssa.gov/cgi-bin/popularnames.cgi`
   end

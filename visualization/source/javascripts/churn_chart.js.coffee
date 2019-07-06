@@ -27,12 +27,12 @@ window.$churnFemale = $('#churn-female')
 window.risingNamesChart = new NameChart document.getElementById('rising-names'), {
   showYAxisLabel: true
   sanitizeLine: (l) -> l
-  xDomain: [1880, 2017]
+  xDomain: [1880, 2018]
 }
 
 window.fallingNamesChart = new NameChart document.getElementById('falling-names'), {
   sanitizeLine: (l) -> l
-  xDomain: [1880, 2017]
+  xDomain: [1880, 2018]
 }
 
 window.mapChurn = (arr) ->
@@ -48,7 +48,7 @@ noUiSlider.create(churnYearSlider, {
   margin: 5,
   animate: false,
   behaviour: 'tap-drag',
-  range: { min: 1880, max: 2017 },
+  range: { min: 1880, max: 2018 },
   pips: { mode: 'values', values: (y for y in [1880..2010] by 10) }
 })
 

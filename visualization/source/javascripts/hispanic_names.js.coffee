@@ -6,7 +6,7 @@ window.exclusivelyHispanicBoyNames = [
   "Enrique", "Ernesto", "Esteban", "Ezequiel", "Felipe",
   "Fernando", "Francisco", "Gael", "Gerardo", "Gilberto", "Guadalupe", "Guillermo",
   "Gustavo", "Hector", "Heriberto", "Humberto", "Ignacio", "Ismael", "Jaime", "Javier",
-  "Jesus", "Joaquin", "Joel", "Jorge", "Josue", "Juan",
+  "Jesus", "Joaquin", "Jorge", "Josue", "Juan",
   "Lorenzo", "Luciano", "Luis", "Manuel", "Marco", "Mateo",
   "Matias", "Mauricio", "Maximiliano", "Maximo", "Miguel", "Moises",
   "Nathanael", "Noel", "Osvaldo", "Pablo", "Pedro", "Rafael", "Ramiro", "Raul", "Reynaldo", "Ricardo", "Rigoberto",
@@ -19,7 +19,7 @@ window.sharedHispanicBoyNames = [
   "Axel", "Benjamin", "Bruno", "Christian",
   "Christopher", "Daniel", "Dante", "Damian", "David", "Dylan",
   "Elias", "Emmanuel", "Gabriel", "Hugo", "Ian", "Isaac",
-  "Ivan", "Joshua", "Julian", "Kevin", "Leonardo", "Lucas",
+  "Ivan", "Joel", "Joshua", "Julian", "Kevin", "Leonardo", "Lucas",
   "Mario", "Martin", "Nicolas", "Samuel", "Saul", "Sebastian",
   "Simon", "Victor"
 ].sort()
@@ -67,6 +67,9 @@ hispanicDemographicData.push(year: 2015, percentage: 17.6)
 # https://www.census.gov/newsroom/facts-for-features/2017/hispanic-heritage.html
 hispanicDemographicData.push(year: 2016, percentage: 17.8)
 
+# https://www.census.gov/newsroom/facts-for-features/2018/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2017, percentage: 18.1)
+
 compChart = new NameChart(document.getElementById('hispanic-popularity-vs-population'), {
   sanitizeLine: (l) -> l
   defined: (d) -> pctgOf(d) > 0.01
@@ -80,7 +83,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
 })
 compChart.setTitle("Hispanic #{genderSymbols.m} Name Popularity vs. Population")
 
-years = [1940..2017]
+years = [1940..2018]
 
 redrawHispanicComparison = ->
   totalsByYear = {}

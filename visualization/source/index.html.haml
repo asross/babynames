@@ -1,13 +1,13 @@
-%h1.page-header Popular Baby Names in the US, 1880-2017
+%h1.page-header Popular Baby Names in the US, 1880-2018
 
 %p
-  This is a visualization and analysis of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames', target: '_blank'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
+  This is a visualization of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames', target: '_blank'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
 
 %p
-  The dataset is interesting because in a very real sense it represents all of us. If you were born in the United States (and you have a relatively popular name), then you, your parents, and many people you care about are in these curves. Many of the things they experienced, everything from world wars to pop culture to racial and gender dynamics, are there too. The data is significant because the decisions behind it are significant; parents often spend months deciding what to call their children.
+  The dataset is interesting because, in a very literal sense, it represents us. If you were born in the United States (and you have a relatively popular name), then you, your parents, and many people you cherish are in these curves. Many of their experiences -- from world wars to culture wars to subtle dynamics of gender and race -- are in there too. The data is significant because the decisions <em>behind</em> it are significant; parents sometimes spend months deciding what to call their kids.
 
 %p
-  It's a big decision, because names matter. They precede you, frame how others perceive you, and their secondary connotations matter, especially when you're #{link_to 'looking for a job', 'http://www.nytimes.com/roomfordebate/2015/10/19/job-discrimination-based-on-a-name', target: '_blank'}. So when parents choose a name, they generally do it seriously, and with a mind to both the current cultural context and a larger historical one. World War II did much to reduce the popularity of Adolph, but for a while, Gump was just as effective at depopularizing Forrest. Parents consider many things both grave and banal when naming their children, and taken collectively they tell richly detailed stories about our ancestors and our culture. This visualization aims to bring some of these stories to the surface and make them accessible.
+  It's a big decision, because names matter. They precede you, frame how you're perceived, and their connotations matter, especially when you're #{link_to 'looking for a job', 'http://www.nytimes.com/roomfordebate/2015/10/19/job-discrimination-based-on-a-name', target: '_blank'}. So when parents choose names, they generally do so seriously, and with a mind to both the current cultural context and a larger historical one. World War II did much to reduce the popularity of "Adolph," but for a while, Gump was just as effective at depopularizing "Forrest." Parents consider many things both grave and banal when naming their children, and taken collectively they tell richly detailed stories about our ancestors and our society. This visualization aims to bring some of these stories to the surface and make them accessible.
 
 %h2.page-header Interactive Tool
 
@@ -20,7 +20,7 @@
 
         .well
           In
-          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2017' value='1880'/>,
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2018' value='1880'/>,
           <select id='name'></select>
           was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000' value='1'/>
           most popular
@@ -171,7 +171,7 @@
     %p
       This might have less to do with the names themselves and more with the fact that the U.S. Hispanic population
       #{link_to 'has grown exponentially', 'https://en.wikipedia.org/wiki/Historical_racial_and_ethnic_demographics_of_the_United_States#Historical_data_for_all_races_and_for_Hispanic_origin_.281610.E2.80.932010.29', target: '_blank'}
-      (from 1.5% in 1940 to 17.4% in 2014).
+      (from 1.5% in 1940 to 18.1% in 2017).
 
     %p
       What if we compared that population growth to the name popularity growth?

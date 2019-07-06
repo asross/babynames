@@ -6,7 +6,7 @@ class Chart
   defaultMarginBottom: 30
   xUnits: 'year'
   yUnits: 'rank'
-  xDomain: [1880, 2017]
+  xDomain: [1880, 2018]
   yDomain: [1000, 1]
   x: (d) -> @xScale(yearOf(d))
   y: (d) -> @yScale(if @yUnits == 'rank' then rankOf(d) else pctgOf(d))
