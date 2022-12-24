@@ -53,7 +53,7 @@ end
 data_by_year = { m: {}, f: {} }
 data_by_name = { m: {}, f: {} }
 
-range = (1880..2018)
+range = (1880..2021)
 decades = ((range.min/10)..(range.max/10)).to_a
 fiveyrs = ((range.min/5)..(range.max/5)).to_a
 

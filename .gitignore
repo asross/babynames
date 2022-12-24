@@ -9,3 +9,4 @@ visualization/.sass-cache
 visualization/cache
 *.env
 .DS_Store
+*.sw[a-z]

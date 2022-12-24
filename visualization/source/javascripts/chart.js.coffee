@@ -6,7 +6,7 @@ class Chart
   defaultMarginBottom: 30
   xUnits: 'year'
   yUnits: 'rank'
-  xDomain: [1880, 2018]
+  xDomain: [1880, window.max_year]
   yDomain: [1000, 1]
   x: (d) -> @xScale(yearOf(d))
   y: (d) -> @yScale(if @yUnits == 'rank' then rankOf(d) else pctgOf(d))
@@ -32,7 +32,7 @@ class Chart
     @xTickValues ||= (d for d in [roundUpTo(10,@xDomain[0])..roundDownTo(10,@xDomain[1])] by 10)
     @yTickValues ||= [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 999]
     @height ||= @defaultChartHeight
-    @width ||= (@xTickValues.length / 14) * @defaultChartWidth
+    @width ||= ((@xTickValues.length-1) / 14) * @defaultChartWidth
     @element = element
     @line = d3.svg.line().interpolate('cardinal').x(@x).y(@y).defined(@defined)
     @parentSvg = d3.select(@element).append('svg')

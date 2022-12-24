@@ -82,6 +82,10 @@ helpers do
   def name_dictionary
     File.read("#{root}/../name_dictionary.json")
   end
+
+  def max_year
+    2021
+  end
 end
 
 # Build-specific configuration

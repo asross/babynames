@@ -1,5 +1,5 @@
 {
-  "name": "Baby Names in the United States, 1880-2014",
+  "name": "babynames",
   "private": true,
   "ignore": [
     "**/.*",

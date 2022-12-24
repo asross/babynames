@@ -76,7 +76,7 @@ noUiSlider.create(yearSlider, {
   connect: 'lower',
   animate: false,
   step: 1,
-  range: { min: 1880, max: 2018 }
+  range: { min: 1880, max: window.max_year }
 })
 
 rankSlider = document.getElementById('rank-slider')
@@ -173,6 +173,7 @@ window.redraw()
 $circle = $(mainChart.circle[0])
 $circle.tooltip(title: 'Drag me!', placement: 'top', trigger: 'manual', container: '#main-chart')
 $circle.tooltip('show')
+$('.tooltip').css('top', '-11px')
 
 circleDrag = d3.behavior.drag()
 

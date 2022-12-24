@@ -1,4 +1,4 @@
-%h1.page-header Popular Baby Names in the US, 1880-2018
+%h1.page-header Popular Baby Names in the US, 1880-#{max_year}
 
 %p
   This is a visualization of baby name popularity data from the #{link_to 'US Office of Social Security', 'http://www.ssa.gov/oact/babynames', target: '_blank'}. The data stretches back to 1880, although it's most reliable after 1937 (when Social Security actually began).
@@ -20,7 +20,7 @@
 
         .well
           In
-          <input id='year-input' class='form-control' type='number' step='1' min='1880' max='2018' value='1880'/>,
+          <input id='year-input' class='form-control' type='number' step='1' min='1880' max="#{max_year}" value='1880'/>,
           <select id='name'></select>
           was the #<input id='rank-input' class='form-control' type='number' step='1' min='1' max='1000' value='1'/>
           most popular
@@ -143,6 +143,8 @@
         .item
           .gender-chart.mtf{ data: { width: 350, name: 'Kelly' } }
         .item
+          .gender-chart.mtf{ data: { width: 350, name: 'Kendall' } }
+        .item
           .gender-chart.mtf{ data: { width: 350, name: 'Ashley' } }
         .item
           .gender-chart.mtf{ data: { width: 350, name: 'Dana' } }
@@ -245,6 +247,7 @@
     .item{data: { cls: 'book', orient: 'top', names: '["Ron:m"]', years: '["1998:/images/sorcerer.jpg:https://en.wikipedia.org/wiki/Harry_Potter_and_the_Philosopher%27s_Stone"]' }}
     .item{data: { cls: 'album', names: '["Mariah:f"]', years: '["1990:/images/mariah.jpg:https://en.wikipedia.org/wiki/Mariah_Carey_(album)"]' }}
     .item{data: { cls: 'album', names: '["Miley:f"]', years: '["2007:/images/miley.png:https://en.wikipedia.org/wiki/Hannah_Montana_2:_Meet_Miley_Cyrus"]' }}
+    .item{data: { cls: 'album', orient: 'top', names: '["Elton:m"]', years: '["1969:/images/elton.jpg:https://en.wikipedia.org/wiki/Empty_Sky"]' }}
     .item{data: { cls: 'album', orient: 'top', names: '["Clay:m"]', years: '["2003:/images/clay.jpg:https://en.wikipedia.org/wiki/Measure_of_a_Man_(Clay_Aiken_album)"]' }}
 
   %a.left.carousel-control{href: '#story-carousel', role: 'button', data: { slide: 'prev' }}
