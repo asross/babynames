@@ -70,11 +70,26 @@ hispanicDemographicData.push(year: 2016, percentage: 17.8)
 # https://www.census.gov/newsroom/facts-for-features/2018/hispanic-heritage-month.html
 hispanicDemographicData.push(year: 2017, percentage: 18.1)
 
+# https://www.census.gov/newsroom/facts-for-features/2019/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2018, percentage: 18.3)
+
+# https://www.census.gov/newsroom/facts-for-features/2020/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2019, percentage: 18.5)
+
+# https://www.census.gov/newsroom/facts-for-features/2021/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2020, percentage: 18.7)
+
+# https://www.census.gov/newsroom/facts-for-features/2022/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2021, percentage: 18.9)
+
+# https://www.census.gov/newsroom/facts-for-features/2023/hispanic-heritage-month.html
+hispanicDemographicData.push(year: 2022, percentage: 19.1)
+
 compChart = new NameChart(document.getElementById('hispanic-popularity-vs-population'), {
   sanitizeLine: (l) -> l
   defined: (d) -> pctgOf(d) > 0.01
   yUnits: 'percentage'
-  xDomain: [1930, 2020]
+  xDomain: [1930, window.max_year]
   percentageDomain: [0.01, 100]
   height: 395
   margin: { left: 30 }
@@ -83,7 +98,7 @@ compChart = new NameChart(document.getElementById('hispanic-popularity-vs-popula
 })
 compChart.setTitle("Hispanic #{genderSymbols.m} Name Popularity vs. Population")
 
-years = [1940..2018]
+years = [1940..window.max_year]
 
 redrawHispanicComparison = ->
   totalsByYear = {}

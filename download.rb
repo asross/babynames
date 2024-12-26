@@ -1,7 +1,7 @@
-1880.upto(2021).each do |year|
+1880.upto(2023).each do |year|
   fname = "./raw/#{year}.html"
 
-  if File.exists?(fname)
+  if File.exist?(fname)
     text = File.read(fname)
     if text.include?("total males")
       puts "already downloaded: #{year}"
